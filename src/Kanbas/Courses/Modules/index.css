@@ -1,0 +1,57 @@
+
+.btn-no-border {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+
+.btn-no-border {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.custom-badge {
+  border: 2px solid Grey;
+  color: Black;
+  background-color: #6c757d
+}
+
+.wd-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-radius:5px;
+  width: 95%;
+}
+
+.wd-lesson {
+  align-items: flex-end;
+  background-color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.wd-module {
+  align-items: flex-end;
+  background-color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  width: 90%;
+}
+
+.custom-button {
+  margin-right: 150px;
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,63 @@
+.btn-no-border {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.custom-assignment-badge {
+  border: 2px solid red;
+  color: white;
+  background-color: #6c757d;
+}
+
+
+.custom-badge {
+  border: 2px solid Grey;
+  color: Black;
+  background-color: #6c757d
+}
+
+.custom-text-color-multiple-module {
+  color: #d61a1a;
+}
+
+.custom-text-color-assignment-icon {
+  color: #2d781c;
+}
+
+.wd-grid-col-third-page {
+  width: 33%;
+  float: left;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+.custom-text-color2 {
+  color: black;
+}
+
+.with-border-left {
+  content: "";
+  display: inline-block;
+  height: 100%;
+  border-left: 4px solid green;
+  margin-right: 10px;
+}
+
+.wd-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  padding: 10px 15px;
+  border-radius:5px;
+  width: 90%;
+}
+
+.custom-button {
+  margin-right: 130px;
+}
+
+

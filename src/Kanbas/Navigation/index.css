@@ -1,0 +1,17 @@
+.list-group-item.bg-black {
+  background-color: black;
+}
+
+.list-group-item.text-white {
+  color: white;
+}
+
+.list-group-item.text-danger {
+  color: red;
+}
+
+.list-group-item.bg-white {
+  background-color: white;
+}
+
+
