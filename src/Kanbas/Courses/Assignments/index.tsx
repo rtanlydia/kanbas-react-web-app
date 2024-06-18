@@ -7,9 +7,13 @@ import { HiOutlinePlus } from "react-icons/hi2";
 import { TbTriangleInvertedFilled } from "react-icons/tb";
 import "./index.css";
 import { MdAssignmentAdd } from "react-icons/md";
-
+import { useParams, Link } from 'react-router-dom';
+import db from '../../Database';
 
 export default function Assignments() {
+  const { cid } = useParams<{ cid: string }>();
+  const courseAssignments = db.assignments.filter((assignment: any) => assignment.course === cid);
+
   return (
       <div id="wd-assignments" className="container mt-4">
         <div className="d-flex justify-content-between mb-3">
@@ -40,6 +44,35 @@ export default function Assignments() {
           <strong className="me-auto align-text-top">ASSIGNMENTS </strong>
           <AssignmentsControlButtons/>
         </div>
+
+        <ul id="wd-assignment-list" className="list-group">
+          {courseAssignments.map(assignment => (
+              <li key={assignment._id}
+                  className="wd-title wd-assignment-list-item list-group-item d-flex justify-content-between align-items-center with-border-left">
+                <div className="d-flex align-items-center">
+                  <div className="border-start border-success border-3 me-0"
+                       style={{height: '100%'}}></div>
+                  <BsGripVertical className="me-2 text-muted" style={{fontSize: '25px'}}/>
+                  <MdAssignmentAdd className="me-3 custom-text-color-assignment-icon"
+                                   style={{fontSize: '20px'}}/>
+                  <div className="d-flex flex-column">
+                    <div className="d-flex align-items-center">
+                      <Link
+                          className="wd-assignment-link fw-bold me-2 custom-text-color2 no-underline"
+                          to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                        {assignment.title}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+                <div className="d-flex align-items-center">
+                  <FaCheckCircle className="text-success me-3"/>
+                  <FaEllipsisV className="text-muted"/>
+                </div>
+              </li>
+          ))}
+        </ul>
+
 
         <ul id="wd-assignment-list" className="list-group">
 
