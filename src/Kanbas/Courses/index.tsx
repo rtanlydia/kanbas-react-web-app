@@ -6,11 +6,10 @@ import AssignmentEditor from "./Assignments/Editor";
 import {Navigate, Route, Routes, useParams, useLocation } from "react-router";
 import Grades from './Grade';
 import { FaAlignJustify } from 'react-icons/fa';
-import db from "../Database";
 
-export default function Courses() {
+export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
-  const course = db.courses.find((course) => course._id === cid);
+  const course = courses.find((course) => course._id === cid);
   const { pathname } = useLocation();
 
   return (
@@ -40,6 +39,5 @@ export default function Courses() {
           </div>
         </div>
       </div>
-  )
-      ;
+  );
 }

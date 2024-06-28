@@ -14,15 +14,6 @@ export function LessonControlButtons() {
       </div>
   );}
 
-export function ModuleControlButtons() {
-  return (
-      <div className="float-end">
-        <GreenCheckmark />
-        <HiOutlinePlus className="me-2" />
-        <IoEllipsisVertical className="fs-4" />
-      </div>
-  );
-}
 
 export function AssignmentsControlButtons() {
   return (
