@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addAssignment, updateAssignment } from './reducer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import * as client from './client';
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams<{ cid: string, aid: string }>();
-  const assignments = useSelector((state: any) => state.assignmentsReducer.assignments);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNewAssignment = aid === "new";
@@ -22,13 +22,20 @@ export default function AssignmentEditor() {
   });
 
   useEffect(() => {
-    if (!isNewAssignment) {
-      const existingAssignment = assignments.find((a: any) => a._id === aid);
-      if (existingAssignment) {
-        setAssignment(existingAssignment);
-      }
+    if (!isNewAssignment && aid) {
+      const fetchAssignment = async () => {
+        try {
+          const existingAssignment = await client.findAssignmentById(aid);
+          if (existingAssignment) {
+            setAssignment(existingAssignment);
+          }
+        } catch (error) {
+          console.error('Error fetching assignment:', error);
+        }
+      };
+      fetchAssignment();
     }
-  }, [aid, assignments, isNewAssignment]);
+  }, [aid, isNewAssignment]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -38,13 +45,19 @@ export default function AssignmentEditor() {
     }));
   };
 
-  const handleSave = () => {
-    if (isNewAssignment) {
-      dispatch(addAssignment({ ...assignment, course: cid }));
-    } else {
-      dispatch(updateAssignment({ ...assignment, _id: aid, course: cid }));
+  const handleSave = async () => {
+    try {
+      if (isNewAssignment) {
+        const createdAssignment = await client.createAssignment(cid as string, assignment);
+        dispatch(addAssignment(createdAssignment));
+      } else {
+        await client.updateAssignment({ ...assignment, _id: aid, course: cid });
+        dispatch(updateAssignment({ ...assignment, _id: aid, course: cid }));
+      }
+      navigate(`/Kanbas/Courses/${cid}/Assignments`);
+    } catch (error) {
+      console.error('Error saving assignment:', error);
     }
-    navigate(`/Kanbas/Courses/${cid}/Assignments`);
   };
 
   const handleCancel = () => {

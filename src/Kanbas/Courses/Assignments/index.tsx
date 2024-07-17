@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch, FaCheckCircle, FaEllipsisV, FaTrash } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsGripVertical } from "react-icons/bs";
@@ -8,23 +8,34 @@ import "./index.css";
 import { MdAssignmentAdd } from "react-icons/md";
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteAssignment } from './reducer';
+import { setAssignments, addAssignment, deleteAssignment } from './reducer';
+import * as client from './client';
 
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
   const [assignmentName, setAssignmentName] = useState("");
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const assignments = useSelector((state: any) => state.assignmentsReducer.assignments);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const courseAssignments = assignments.filter((assignment: any) => assignment.course === cid);
+  useEffect(() => {
+    const fetchAssignments = async () => {
+      const assignments = await client.findAssignmentsForCourse(cid as string);
+      dispatch(setAssignments(assignments));
+    };
+    fetchAssignments();
+  }, [cid, dispatch]);
 
-  const addNewAssignment = () => {
-    navigate(`/Kanbas/Courses/${cid}/Assignments/new`);
+  const addNewAssignment = async () => {
+    const newAssignment = { title: assignmentName, course: cid };
+    const createdAssignment = await client.createAssignment(cid as string, newAssignment);
+    dispatch(addAssignment(createdAssignment));
+    setAssignmentName("");
   };
 
-  const deleteAssignmentById = (assignmentId: string) => {
+  const deleteAssignmentById = async (assignmentId: string) => {
     if (window.confirm("Are you sure you want to delete this assignment?")) {
+      await client.deleteAssignment(assignmentId);
       dispatch(deleteAssignment(assignmentId));
     }
   };
@@ -51,7 +62,7 @@ export default function Assignments() {
           <strong className="me-auto align-text-top">ASSIGNMENTS</strong>
         </div>
         <ul id="wd-assignment-list" className="list-group">
-          {courseAssignments.map((assignment: any) => (
+          {assignments.filter((assignment: any) => assignment.course === cid).map((assignment: any) => (
               <li key={assignment._id} className="wd-title wd-assignment-list-item list-group-item d-flex justify-content-between align-items-center with-border-left">
                 <div className="d-flex align-items-center">
                   <div className="border-start border-success border-3 me-0" style={{height: '100%'}}></div>
