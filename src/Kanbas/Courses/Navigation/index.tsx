@@ -89,7 +89,7 @@ import React, { useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import './index.css';
 
-const links = ["Home", "Modules", "Piazza", "Zoom", "Assignments", "Quizzes", "Grades"];
+const links = ["Home", "Modules", "Piazza", "Zoom", "Assignments", "Quizzes", "Grades","People"];
 
 export default function CoursesNavigation() {
   const { cid } = useParams<{ cid: string }>();
