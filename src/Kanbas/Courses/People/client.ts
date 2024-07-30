@@ -27,3 +27,23 @@ export const deleteUser = async (userId: string) => {
   return response.data;
 };
 
+export const updateUser = async (user: any) => {
+  const response = await axios.put(`${USERS_API}/${user._id}`, user);
+  return response.data;
+};
+
+export const createUser = async (user: any) => {
+  const response = await axios.post(`${USERS_API}`, user);
+  return response.data;
+};
+
+export const updateUserEmail = async (userId: string, email: string): Promise<any> => {
+  const response = await axios.put(`${USERS_API}/${userId}/email`, { email });
+  return response.data;
+};
+
+
+export const updateUserRole = async (userId: string, role: string): Promise<any> => {
+  const response = await axios.put(`${USERS_API}/${userId}/role`, { role });
+  return response.data;
+};

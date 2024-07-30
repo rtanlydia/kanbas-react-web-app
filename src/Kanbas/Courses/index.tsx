@@ -7,7 +7,6 @@ import {Navigate, Route, Routes, useParams, useLocation } from "react-router";
 import Grades from './Grade';
 import { FaAlignJustify } from 'react-icons/fa';
 import PeopleTable from "./People/Table";
-import PeopleDetails from "./People/Details";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
