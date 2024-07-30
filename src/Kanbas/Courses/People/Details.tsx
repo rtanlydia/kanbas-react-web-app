@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import * as client from "./client";
 import { FaPencil } from "react-icons/fa6";
-import { FaCheck, FaUserCircle } from "react-icons/fa";
+import {FaCheck, FaEdit, FaUserCircle} from "react-icons/fa";
 import {updateUserEmail} from "./client";
 import {stringify} from "node:querystring";
 export default function PeopleDetails({ fetchUsers }:
@@ -20,12 +20,12 @@ export default function PeopleDetails({ fetchUsers }:
   const [user, setUser] = useState<any>({});
 
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState(user.role || "");
   const [editingEmail, setEditingEmail] = useState(false);
   const [editingRole, setEditingRole] = useState(false);
-
   const [name, setName] = useState("");
   const [editing, setEditing] = useState(false);
+
   const saveUser = async () => {
     const [firstName, lastName] = name.split(" ");
     const updatedUser = { ...user, firstName, lastName };
@@ -38,10 +38,11 @@ export default function PeopleDetails({ fetchUsers }:
 
   const saveEmail = async () => {
     // const [firstName, lastName] = name.split(" ");
-    const updatedUserEmail = { ...user,email };
+    //const updatedUserEmail = { ...user,email };
     await client.updateUserEmail(uid!, email);
-    setEmail(updatedUserEmail);
-    setEditing(false);
+    setUser({ ...user, email });
+    //setEmail(updatedUserEmail);
+    setEditingEmail(false);
     fetchUsers();
     navigate(`/Kanbas/Courses/${cid}/People`);
   };
@@ -83,6 +84,10 @@ export default function PeopleDetails({ fetchUsers }:
 
   if (!uid) return null;
 
+  const handleSaveRole = () => {
+    saveRole();
+    setEditingRole(false);
+  };
 
   return (
       <div className="wd-people-details position-fixed top-0 end-0 bottom-0 bg-white p-4 shadow w-25">
@@ -114,17 +119,17 @@ export default function PeopleDetails({ fetchUsers }:
           )}
         </div>
 
-        <div className="wd-email"> {!editing && (
-            <FaPencil onClick={() => setEditing(true)}
+        <div className="wd-email"> {!editingEmail && (
+            <FaPencil onClick={() => setEditingEmail(true)}
                       className="text-danger float-end fs-5 mt-2 wd-edit"/>)}
-          {editing && (
+          {editingEmail && (
               <FaCheck onClick={() => saveEmail()}
                        className="float-end fs-5 mt-2 me-2 wd-save"/>)}
-          {!editing && (
+          {!editingEmail && (
               <div className="wd-email"
-                   onClick={() => setEditing(true)}>
+                   onClick={() => setEditingEmail(true)}>
                 {user.email} </div>)}
-          {user && editing && (
+          {user && editingEmail && (
               <input className="form-control w-50 wd-edit-name"
                      defaultValue={`${user.email}`}
                      onChange={(e) => setEmail(e.target.value)}
@@ -137,25 +142,38 @@ export default function PeopleDetails({ fetchUsers }:
           )}
         </div>
 
-        <div className="wd-role">
+        <div className="wd-role" style={{ display: 'flex', alignItems: 'center' }}>
           <b>Role:</b>
           {editingRole ? (
-              <>
-                <select className="form-control w-50 wd-edit-role" value={role}
-                        onChange={(e) => setRole(e.target.value)} onBlur={saveRole}>
-                  <option value="STUDENT">Students</option>
-                  <option value="TA">Assistants</option>
-                  <option value="FACULTY">Faculty</option>
-                </select>
-                <FaCheck onClick={saveRole} className="float-end fs-5 mt-2 wd-save"/>
-              </>
+            <>
+              <select
+                className="form-control wd-edit-role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                style={{
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  padding: '8px',
+                  marginLeft: '10px'
+                }}
+              >
+                <option value="">Select Role</option>
+                <option value="STUDENT">Students</option>
+                <option value="TA">Assistants</option>
+                <option value="FACULTY">Faculty</option>
+              </select>
+              <FaCheck onClick={handleSaveRole} className="fs-5 wd-save" style={{ marginLeft: '10px' }} />
+            </>
           ) : (
-              <div className="wd-role" onClick={() => setEditingRole(true)}>{user.role}</div>
+            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '10px' }}>
+              <span>{role || "No role assigned"}</span>
+              <FaEdit onClick={() => setEditingRole(true)} style={{ marginLeft: '10px', cursor: 'pointer' }} />
+            </div>
           )}
         </div>
 
 
-        <b>Roles:</b> <span className="wd-roles">         {user.role}         </span> <br/>
+        {/*<b>Roles:</b> <span className="wd-roles">         {user.role}         </span> <br/>*/}
         <b>Login ID:</b> <span className="wd-login-id">      {user.loginId}      </span> <br/>
         <b>Section:</b> <span className="wd-section">       {user.section}      </span> <br/>
         <b>Total Activity:</b> <span className="wd-total-activity">{user.totalActivity}</span>
