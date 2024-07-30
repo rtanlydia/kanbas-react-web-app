@@ -1,0 +1,17 @@
+.wd-profile-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* 间距，可以根据需要调整 */
+}
+
+.wd-profile-container label {
+    margin-bottom: 5px;
+}
+
+.wd-profile-container input,
+.wd-profile-container select,
+.wd-profile-container button {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
