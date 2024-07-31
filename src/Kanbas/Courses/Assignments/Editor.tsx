@@ -37,6 +37,7 @@ export default function AssignmentEditor() {
     }
   }, [aid, isNewAssignment]);
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
     setAssignment((prevAssignment: any) => ({
