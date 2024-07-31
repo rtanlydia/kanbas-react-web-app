@@ -45,6 +45,23 @@ export default function Kanbas() {
         })
     );
   };
+  // const updateCourse = async () => {
+  //   try {
+  //     const updatedCourse = await client.updateCourse(course);
+  //     setCourses(
+  //       courses.map((c) => {
+  //         if (c.number === course.number) { // 比较 course.name 而不是 course._id
+  //           return updatedCourse; // 使用更新后的课程数据
+  //         } else {
+  //           return c;
+  //         }
+  //       })
+  //     );
+  //   } catch (error) {
+  //     console.error('Error updating course:', error);
+  //   }
+  // };
+
 
   return (
       <Provider store={store}>
