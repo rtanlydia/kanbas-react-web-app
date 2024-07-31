@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import * as client from "./Courses/client";
 import Account from "./Account";
 import ProtectedRoute from "./ProtectedRoute";
+
 export default function Kanbas() {
   const [courses, setCourses] = useState<any[]>([]);
   const fetchCourses = async () => {
@@ -20,13 +21,14 @@ export default function Kanbas() {
   }, []);
 
   const [course, setCourse] = useState<any>({
-    _id: "1234", name: "New Course", number: "New Number",
+    _id: "", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
   const addNewCourse = async () => {
     const newCourse = await client.createCourse(course);
     setCourses([...courses, { ...course, newCourse }]);
   };
+
   const deleteCourse = async (courseId: any) => {
     await client.deleteCourse(courseId);
     setCourses(courses.filter((course) => course._id !== courseId));

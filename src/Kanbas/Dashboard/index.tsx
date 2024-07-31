@@ -43,7 +43,7 @@ export default function Dashboard(
 
             {courses.map((course) => (
                 <div className="wd-dashboard-course col" style={{width: "300px"}}>
-                  <Link to={`/Kanbas/Courses/${course._id}/Home`} className="text-decoration-none">
+                  <Link to={`/Kanbas/Courses/${course.number}/Home`} className="text-decoration-none">
 
                     <div className="card rounded-3 overflow-hidden">
                       <img src="/images/reactjs.jpg" height="{160}"/>
@@ -56,7 +56,7 @@ export default function Dashboard(
                            style={{maxHeight: 53, overflow: "hidden"}}>
                           {course.description}
                         </p>
-                        <Link to={`/Kanbas/Courses/${course._id}/Home`}
+                        <Link to={`/Kanbas/Courses/${course.number}/Home`}
                               className="btn btn-primary">Go</Link>
 
                         <button onClick={(event) => {
