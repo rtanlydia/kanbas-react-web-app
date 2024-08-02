@@ -8,6 +8,8 @@ export default function Signin() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const dispatch = useDispatch();
+
+
   const signin = async () => {
     try {
       const currentUser = await client.signin(credentials);
@@ -18,17 +20,52 @@ export default function Signin() {
     }
 
   };
+  // return (
+  //   <div id="wd-signin-screen">
+  //     <h1>Sign in</h1>
+  //     {error && <div className="wd-error alert alert-danger">{error}</div>}
+  //     <input id="wd-username" onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+  //            value={credentials.username} className="form-control mb-2" placeholder="username" />
+  //     <input id="wd-password" onChange={(e) => setCredentials({ ...credentials, password: e.target.value }) }
+  //            value={credentials.password} className="form-control mb-2" placeholder="password" type="password" />
+  //     <button id="wd-signin-btn" onClick={signin} className="btn btn-primary w-100"> Sign in </button>
+  //     <br />
+  //     <Link id="wd-signup-link" to="/Kanbas/Account/Signup">Sign up</Link>
+  //   </div>
+  // );
+
   return (
-    <div id="wd-signin-screen">
-      <h1>Sign in</h1>
-      {error && <div className="wd-error alert alert-danger">{error}</div>}
-      <input id="wd-username" onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
-             value={credentials.username} className="form-control mb-2" placeholder="username" />
-      <input id="wd-password" onChange={(e) => setCredentials({ ...credentials, password: e.target.value }) }
-             value={credentials.password} className="form-control mb-2" placeholder="password" type="password" />
-      <button id="wd-signin-btn" onClick={signin} className="btn btn-primary w-100"> Sign in </button>
-      <br />
-      <Link id="wd-signup-link" to="/Kanbas/Account/Signup">Sign up</Link>
-    </div>
+      <div id="wd-signin-screen">
+        <h1>Sign in</h1>
+        {error && <div className="wd-error alert alert-danger">{error}</div>}
+        <input
+            id="wd-username"
+            onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+            value={credentials.username}
+            className="form-control mb-2"
+            placeholder="username"
+        />
+        <input
+            id="wd-password"
+            onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+            value={credentials.password}
+            className="form-control mb-2"
+            placeholder="password"
+            type="password"
+        />
+        <select
+            id="wd-role"
+            onChange={(e) => setCredentials({ ...credentials, role: e.target.value })}
+            value={credentials.role}
+            className="form-control mb-2"
+        >
+          <option value="student">Student</option>
+          <option value="faculty">Faculty</option>
+        </select>
+        <button id="wd-signin-btn" onClick={signin} className="btn btn-primary w-100">Sign in</button>
+        <br />
+        <Link id="wd-signup-link" to="/Kanbas/Account/Signup">Sign up</Link>
+      </div>
   );
+
 }
