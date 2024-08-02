@@ -4,7 +4,7 @@
     padding: 0;
 }
 
-.custom-assignment-badge {
+.custom-quiz-badge {
     border: 2px solid red;
     color: white;
     background-color: #6c757d;
@@ -21,7 +21,7 @@
     color: #d61a1a;
 }
 
-.custom-text-color-assignment-icon {
+.custom-text-color-quiz-icon {
     color: #2d781c;
 }
 

@@ -1,29 +1,29 @@
 import axios from "axios";
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
-const ASSIGNMENTS_API = `${REMOTE_SERVER}/api/assignments`;
+const QUIZZES_API = `${REMOTE_SERVER}/api/quizzes`;
 
-export const createAssignment = async (courseId: string, assignment: any) => {
-  const response = await axios.post(`${COURSES_API}/${courseId}/assignments`, assignment);
+export const createQuiz = async (courseId: string, quiz: any) => {
+  const response = await axios.post(`${COURSES_API}/${courseId}/quizzes`, quiz);
   return response.data;
 };
 
-export const findAssignmentsForCourse = async (courseId: string) => {
-  const response = await axios.get(`${COURSES_API}/${courseId}/assignments`);
+export const findQuizzesForCourse = async (courseId: string) => {
+  const response = await axios.get(`${COURSES_API}/${courseId}/quizzes`);
   return response.data;
 };
 
-export const updateAssignment = async (assignment: any) => {
-  const response = await axios.put(`${ASSIGNMENTS_API}/${assignment._id}`, assignment);
+export const updateQuiz = async (quiz: any) => {
+  const response = await axios.put(`${QUIZZES_API}/${quiz._id}`, quiz);
   return response.data;
 };
 
-export const deleteAssignment = async (assignmentId: string) => {
-  const response = await axios.delete(`${ASSIGNMENTS_API}/${assignmentId}`);
+export const deleteQuiz = async (quizId: string) => {
+  const response = await axios.delete(`${QUIZZES_API}/${quizId}`);
   return response.data;
 };
 
-export const findAssignmentById = async (assignmentId: string) => {
-  const response = await axios.get(`${ASSIGNMENTS_API}/${assignmentId}`);
+export const findQuizById = async (quizId: string) => {
+  const response = await axios.get(`${QUIZZES_API}/${quizId}`);
   return response.data;
 };

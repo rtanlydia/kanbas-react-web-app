@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addAssignment, updateAssignment } from './reducer';
+import { addQuizzes, updateQuizzes } from './reducer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import * as client from './client';
 
-export default function AssignmentEditor() {
-  const { cid, aid } = useParams<{ cid: string, aid: string }>();
+export default function QuizEditor() {
+  const { cid, qid } = useParams<{ cid: string, qid: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isNewAssignment = aid === "new";
+  const isNewQuiz = qid === "new";
 
-  const [assignment, setAssignment] = useState<any>({
+  const [quiz, setQuiz] = useState<any>({
     title: '',
     description: '',
     points: 100,
@@ -22,65 +22,65 @@ export default function AssignmentEditor() {
   });
 
   useEffect(() => {
-    if (!isNewAssignment && aid) {
-      const fetchAssignment = async () => {
+    if (!isNewQuiz && qid) {
+      const fetchQuiz = async () => {
         try {
-          const existingAssignment = await client.findAssignmentById(aid);
-          if (existingAssignment) {
-            setAssignment(existingAssignment);
+          const existingQuiz = await client.findQuizById(qid);
+          if (existingQuiz) {
+            setQuiz(existingQuiz);
           }
         } catch (error) {
-          console.error('Error fetching assignment:', error);
+          console.error('Error fetching quiz:', error);
         }
       };
-      fetchAssignment();
+      fetchQuiz();
     }
-  }, [aid, isNewAssignment]);
+  }, [qid, isNewQuiz]);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
-    setAssignment((prevAssignment: any) => ({
-      ...prevAssignment,
+    setQuiz((prevQuiz: any) => ({
+      ...prevQuiz,
       [id]: value
     }));
   };
 
   const handleSave = async () => {
     try {
-      if (isNewAssignment) {
-        const createdAssignment = await client.createAssignment(cid as string, assignment);
-        dispatch(addAssignment(createdAssignment));
+      if (isNewQuiz) {
+        const createdQuiz = await client.createQuiz(cid as string, quiz);
+        dispatch(addQuizzes(createdQuiz));
       } else {
-        await client.updateAssignment({ ...assignment, _id: aid, course: cid });
-        dispatch(updateAssignment({ ...assignment, _id: aid, course: cid }));
+        await client.updateQuiz({ ...quiz, _id: qid, course: cid });
+        dispatch(updateQuizzes({ ...quiz, _id: qid, course: cid }));
       }
-      navigate(`/Kanbas/Courses/${cid}/Assignments`);
+      navigate(`/Kanbas/Courses/${cid}/Quizzes`);
     } catch (error) {
-      console.error('Error saving assignment:', error);
+      console.error('Error saving quiz:', error);
     }
   };
 
   const handleCancel = () => {
-    navigate(`/Kanbas/Courses/${cid}/Assignments`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes`);
   };
 
   return (
-      <div id="wd-assignments-editor" className="container mt-4">
+      <div id="wd-quizzes-editor" className="container mt-4">
         <div className="mb-3">
-          <label htmlFor="title" className="form-label">Assignment Name</label>
-          <input id="title" className="form-control" value={assignment.title} onChange={handleChange} />
+          <label htmlFor="title" className="form-label">Quiz Name</label>
+          <input id="title" className="form-control" value={quiz.title} onChange={handleChange} />
         </div>
         <div className="mb-3">
           <label htmlFor="description" className="form-label">Description</label>
-          <textarea id="description" className="form-control" rows={6} value={assignment.description} onChange={handleChange} />
+          <textarea id="description" className="form-control" rows={6} value={quiz.description} onChange={handleChange} />
         </div>
         <div className="row mb-3">
           <div className="col-md-2">
             <label htmlFor="points" className="form-label">Points</label>
           </div>
           <div className="col-md-4">
-            <input id="points" className="form-control" type="number" value={assignment.points} onChange={handleChange} />
+            <input id="points" className="form-control" type="number" value={quiz.points} onChange={handleChange} />
           </div>
         </div>
         <div className="row mb-3">
@@ -88,7 +88,7 @@ export default function AssignmentEditor() {
             <label htmlFor="dueDate" className="form-label">Due Date</label>
           </div>
           <div className="col-md-4">
-            <input id="dueDate" className="form-control" type="datetime-local" value={assignment.dueDate} onChange={handleChange} />
+            <input id="dueDate" className="form-control" type="datetime-local" value={quiz.dueDate} onChange={handleChange} />
           </div>
         </div>
         <div className="row mb-3">
@@ -96,7 +96,7 @@ export default function AssignmentEditor() {
             <label htmlFor="availableFrom" className="form-label">Available From</label>
           </div>
           <div className="col-md-4">
-            <input id="availableFrom" className="form-control" type="datetime-local" value={assignment.availableFrom} onChange={handleChange} />
+            <input id="availableFrom" className="form-control" type="datetime-local" value={quiz.availableFrom} onChange={handleChange} />
           </div>
         </div>
         <div className="row mb-3">
@@ -104,7 +104,7 @@ export default function AssignmentEditor() {
             <label htmlFor="availableUntil" className="form-label">Available Until</label>
           </div>
           <div className="col-md-4">
-            <input id="availableUntil" className="form-control" type="datetime-local" value={assignment.availableUntil} onChange={handleChange} />
+            <input id="availableUntil" className="form-control" type="datetime-local" value={quiz.availableUntil} onChange={handleChange} />
           </div>
         </div>
         <hr />

@@ -1,40 +1,40 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface Assignment {
+interface Quiz {
   _id: string;
   title: string;
   course: string;
 }
 
-interface AssignmentsState {
-  assignments: Assignment[];
+interface QuizzesState {
+  quizzes: Quiz[];
 }
 
-const initialState: AssignmentsState = {
-  assignments: [],
+const initialState: QuizzesState = {
+  quizzes: [],
 };
 
-const assignmentsSlice = createSlice({
-  name: "assignments",
+const quizzesSlice = createSlice({
+  name: "quizzes",
   initialState,
   reducers: {
-    setAssignments: (state, action: PayloadAction<Assignment[]>) => {
-      state.assignments = action.payload;
+    setQuizzes: (state, action: PayloadAction<Quiz[]>) => {
+      state.quizzes = action.payload;
     },
-    addAssignment: (state, action: PayloadAction<Assignment>) => {
-      state.assignments.push(action.payload);
+    addQuizzes: (state, action: PayloadAction<Quiz>) => {
+      state.quizzes.push(action.payload);
     },
-    deleteAssignment: (state, action: PayloadAction<string>) => {
-      state.assignments = state.assignments.filter(a => a._id !== action.payload);
+    deleteQuizzes: (state, action: PayloadAction<string>) => {
+      state.quizzes = state.quizzes.filter(a => a._id !== action.payload);
     },
-    updateAssignment: (state, action: PayloadAction<Assignment>) => {
-      const index = state.assignments.findIndex(a => a._id === action.payload._id);
+    updateQuizzes: (state, action: PayloadAction<Quiz>) => {
+      const index = state.quizzes.findIndex(a => a._id === action.payload._id);
       if (index !== -1) {
-        state.assignments[index] = action.payload;
+        state.quizzes[index] = action.payload;
       }
     },
   },
 });
 
-export const { setAssignments, addAssignment, deleteAssignment, updateAssignment } = assignmentsSlice.actions;
-export default assignmentsSlice.reducer;
+export const { setQuizzes, addQuizzes, deleteQuizzes, updateQuizzes } = quizzesSlice.actions;
+export default quizzesSlice.reducer;
