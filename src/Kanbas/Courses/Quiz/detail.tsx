@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import {useParams, useNavigate, Link} from 'react-router-dom';
 import * as client from './client';
 
 export default function QuizDetail() {
@@ -24,7 +24,7 @@ export default function QuizDetail() {
   }, [qid]);
 
   const handleEdit = () => {
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/edit`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
   };
 
   if (!quiz) {
@@ -40,7 +40,7 @@ export default function QuizDetail() {
             <p>Quiz Type: {quiz.quizType}</p>
             <p>Points: {quiz.points}</p>
             <p>Assignment Group: {quiz.assignmentGroup}</p>
-            <p>Shuffle Answers: {quiz.shuffleAnswers ? 'Yes' : 'No'}</p>
+            <p>Shuffle Answers: {quiz.shuffleAnswers ? 'No' : 'Yes'}</p>
             <p>Time Limit: {quiz.timeLimit} Minutes</p>
             <p>Multiple Attempts: {quiz.multipleAttempts ? 'Yes' : 'No'}</p>
             <p>Show Correct Answers: {quiz.showCorrectAnswers}</p>

@@ -111,6 +111,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setQuizzes, addQuizzes, deleteQuizzes } from './reducer';
 import * as client from './client';
 import Dropdown from 'react-bootstrap/Dropdown';
+import QuizDetail from "./detail";
 
 export default function Quizzes() {
   const { cid } = useParams<{ cid: string }>();
@@ -176,7 +177,7 @@ export default function Quizzes() {
                   <MdAssignmentAdd className="me-3 custom-text-color-quiz-icon" style={{fontSize: '20px'}}/>
                   <div className="d-flex flex-column">
                     <div className="d-flex align-items-center">
-                      <Link className="wd-quiz-link fw-bold me-2 custom-text-color2 no-underline" to={`/Kanbas/Courses/${cid}/quizzes/${quiz._id}`}>
+                      <Link className="wd-quiz-link fw-bold me-2 custom-text-color2 no-underline" to={`/Kanbas/Courses/${cid}/QuizDetail/${quiz._id}`}>
                         {quiz.title}
                       </Link>
                     </div>
