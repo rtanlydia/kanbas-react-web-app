@@ -7,6 +7,7 @@ import './index.css';
 import * as client from './client';
 import { Tab, Tabs, Form, Button, InputGroup, FormControl } from 'react-bootstrap';
 import { Dropdown } from 'react-bootstrap';
+import {FaEdit} from "react-icons/fa";
 
 
 export default function QuizEditor() {
@@ -284,6 +285,11 @@ export default function QuizEditor() {
                           </Dropdown>
 
 
+                          <Dropdown.Item onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}`)}>
+                            <FaEdit className="me-2"/> questionEditor
+                          </Dropdown.Item>
+
+
                           <Button variant="danger" className="mt-2" onClick={() => handleSaveQuestion(index)}>Save</Button>
                           <Button variant="secondary" className="mt-2 ms-2" onClick={() => handleCancelQuestion(index)}>Cancel</Button>
                         </div>
@@ -297,7 +303,8 @@ export default function QuizEditor() {
               ))}
             </div>
             <div className="mb-3 text-center">
-              <Button variant="secondary" onClick={handleAddQuestion}>+ New Question</Button>
+              <Button variant="secondary" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}`)}>
+                + New Question</Button>
             </div>
           </Tab>
         </Tabs>
