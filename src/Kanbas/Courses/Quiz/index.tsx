@@ -111,7 +111,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setQuizzes, addQuizzes, deleteQuizzes } from './reducer';
 import * as client from './client';
 import Dropdown from 'react-bootstrap/Dropdown';
-import QuizDetail from "./detail";
 
 export default function Quizzes() {
   const { cid } = useParams<{ cid: string }>();
@@ -198,7 +197,7 @@ export default function Quizzes() {
                       <FaEllipsisV className="text-muted"/>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => navigate(`/Kanbas/Courses/${cid}/quizzes/${quiz._id}`)}>
+                      <Dropdown.Item onClick={() => navigate(`/Kanbas/Courses/${cid}/QuizEditor/${quiz._id}`)}>
                         <FaEdit className="me-2"/> Edit
                       </Dropdown.Item>
                       {/*<Dropdown.Item onClick={() => navigate(`/Kanbas/Courses/${cid}/QuizDetail/${quiz._id}`)}>*/}

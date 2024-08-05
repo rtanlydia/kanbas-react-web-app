@@ -60,4 +60,16 @@
     margin-right: 130px;
 }
 
+.custom-edit-button {
+    border: 2px solid red;
+    color: white;
+    background-color: #d61a1a;
+}
 
+.custom-tab-title {
+    color: #d61a1a;
+}
+
+.custom-tab-title.active {
+    color: black;
+}
