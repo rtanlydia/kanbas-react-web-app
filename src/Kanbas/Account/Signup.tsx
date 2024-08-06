@@ -53,8 +53,9 @@ export default function Signup() {
             onChange={(e) => setUser({ ...user, role: e.target.value })}
             className="wd-role form-control mb-2"
         >
-          <option value="student">Student</option>
-          <option value="faculty">Faculty</option>
+          <option value="USER">User</option>
+          <option value="STUDENT">Student</option>
+          <option value="FACULTY">Faculty</option>
         </select>
         <button onClick={signup} className="wd-signup-btn btn btn-primary w-100">Sign up</button><br />
         <Link to="/Kanbas/Account/Signin" className="wd-signin-link">Sign in</Link>

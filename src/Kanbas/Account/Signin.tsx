@@ -59,6 +59,7 @@ export default function Signin() {
             value={credentials.role}
             className="form-control mb-2"
         >
+          <option value="user">User</option>
           <option value="student">Student</option>
           <option value="faculty">Faculty</option>
         </select>

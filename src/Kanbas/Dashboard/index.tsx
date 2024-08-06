@@ -1,20 +1,93 @@
 import { Link } from "react-router-dom";
 import db from "../Database";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import accountReducer, {setCurrentUser} from "../Account/reducer";
+import { enrollInCourse } from "./client";
+import {Navigate} from "react-router";
 
 
 
 export default function Dashboard(
-    { courses, course, setCourse, addNewCourse,
-      deleteCourse, updateCourse }: {
+
+    { currentUser, courses, course, setCourse, addNewCourse,
+      deleteCourse, updateCourse }: {currentUser: any;
       courses: any[]; course: any; setCourse: (course: any) => void;
       addNewCourse: () => void; deleteCourse: (course: any) => void;
       updateCourse: () => void; }
 ) {
+
+  currentUser = useSelector((state: any) => state.accountReducer.currentUser);
+  const dispatch = useDispatch();
+  const [displayedCourses, setDisplayedCourses] = useState<any[]>(courses);
+  useEffect(() => {
+    if (currentUser?.role === "STUDENT") {
+      setDisplayedCourses(currentUser.enrolledCourses || []);
+    } else {
+      setDisplayedCourses(courses);
+    }
+  }, [currentUser, courses]);
+  // if (currentUser?.role === "STUDENT") {
+  //   return <Navigate to="/Kanbas/Dashboard" />;
+  // }
+
+  const enrollInCourseHandler = async (courseId: string) => {
+    try {
+      const updatedUser = await enrollInCourse(currentUser._id, courseId);
+      dispatch(setCurrentUser(updatedUser));
+    } catch (error) {
+      console.error("Failed to enroll in course", error);
+    }
+  };
+
+  if (currentUser?.role === "STUDENT") {
+    return (
+      <div id="wd-dashboard" style={{ marginLeft: "30px", marginTop: "30px" }}>
+        <h1 id="wd-dashboard-title" style={{ marginBottom: "20px" }}>Dashboard</h1>
+        <hr />
+        <div>
+          <h3>Welcome, {currentUser?.username || "User"}!</h3>
+          <p>Role: {currentUser?.role || "N/A"}</p>
+        </div>
+        <h2 id="wd-dashboard-published" style={{ marginLeft: "30px" }}>Enrolled Courses ({displayedCourses.length})</h2>
+        <hr />
+        <div id="wd-dashboard-courses" className="row">
+          <div className="row row-cols-1 row-cols-md-5 g-4">
+            {displayedCourses.map((course) => (
+
+              <div key={course._id} className="wd-dashboard-course col" style={{ width: "300px" }}>
+                <Link to={`/Kanbas/Courses/${course.number}/Home`} className="text-decoration-none">
+                  <div className="card rounded-3 overflow-hidden">
+                    <img src="/images/reactjs.jpg" height="160" alt="Course" />
+                    <div className="card-body">
+                      <span className="wd-dashboard-course-link" style={{ textDecoration: "none", color: "navy", fontWeight: "bold" }}>
+                        {course.name}
+                      </span>
+                      <p className="wd-dashboard-course-title card-text" style={{ maxHeight: 53, overflow: "hidden" }}>
+                        {course.description}
+                      </p>
+                      <Link to={`/Kanbas/Courses/${course.number}/Home`} className="btn btn-primary">Go</Link>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
   return (
       <div id="wd-dashboard" style={{marginLeft: "30px", marginTop: "30px"}}>
         <h1 id="wd-dashboard-title" style={{marginBottom: "20px"}}>Dashboard</h1>
         <hr/>
+        <div>
+          <h3>Welcome, {currentUser?.username || "User"}!</h3>
+          <p>Role: {currentUser?.role || "N/A"}</p>
+          <p>Role: {currentUser?.enrolledCourses || "N/A"}</p>
+        </div>
         <h5>New Course
           <button className="btn btn-primary float-end"
                   id="wd-add-new-course-click"
@@ -83,120 +156,8 @@ export default function Dashboard(
                 </div>
             ))}
 
-            <div className="wd-dashboard-course col" style={{width: "300px"}}>
-            <div className="card" style={{height: "280px"}}>
-                <img src="/images/cs5001.jpg" alt="CS 5001"
-                     style={{width: "100%", height: "200px", objectFit: "cover"}}/>
-                <div className="card-body" style={{height: "300px"}}>
-                  <a className="wd-dashboard-course-link"
-                     href="#/Kanbas/Courses/5001/Home"
-                     style={{textDecoration: "none", color: "navy", fontWeight: "bold"}}>
-                    CS 5001
-                  </a>
-                  <p className="wd-dashboard-course-title card-text">
-                    Intensive Foundations of CS
-                  </p>
-                  <a href="#/Kanbas/Courses/5001/Home" className="btn btn-primary"> Go </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="wd-dashboard-course col" style={{width: "300px"}}>
-              <div className="card" style={{height: "280px"}}>
-                <img src="/images/cs5002.jpg" alt="CS 5002"
-                     style={{width: "100%", height: "200px", objectFit: "cover"}}/>
-                <div className="card-body" style={{height: "300px"}}>
-                  <a className="wd-dashboard-course-link"
-                     href="#/Kanbas/Courses/5002/Home"
-                     style={{textDecoration: "none", color: "navy", fontWeight: "bold"}}>
-                    CS 5001
-                  </a>
-                  <p className="wd-dashboard-course-title card-text">
-                    Discrete & Data Structures
-                  </p>
-                  <a href="#/Kanbas/Courses/5002/Home" className="btn btn-primary"> Go </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="wd-dashboard-course col" style={{width: "300px"}}>
-              <div className="card" style={{height: "280px"}}>
-                <img src="/images/cs5004.jpg" alt="CS 5004"
-                     style={{width: "100%", height: "200px", objectFit: "cover"}}/>
-                <div className="card-body" style={{height: "300px"}}>
-                  <a className="wd-dashboard-course-link"
-                     href="#/Kanbas/Courses/5004/Home"
-                     style={{textDecoration: "none", color: "navy", fontWeight: "bold"}}>
-                    CS 5004
-                  </a>
-                  <p className="wd-dashboard-course-title card-text">
-                    Object-Oriented Design
-                  </p>
-                  <a href="#/Kanbas/Courses/5004/Home" className="btn btn-primary"> Go </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="wd-dashboard-course col" style={{width: "300px"}}>
-              <div className="card" style={{height: "280px"}}>
-                <img src="/images/cs5008.jpg" alt="CS 5008"
-                     style={{width: "100%", height: "200px", objectFit: "cover"}}/>
-                <div className="card-body" style={{height: "300px"}}>
-                  <a className="wd-dashboard-course-link"
-                     href="#/Kanbas/Courses/5008/Home"
-                     style={{textDecoration: "none", color: "navy", fontWeight: "bold"}}>
-                    CS 5004
-                  </a>
-                  <p className="wd-dashboard-course-title card-text">
-                    Data Structures
-                  </p>
-                  <a href="#/Kanbas/Courses/5008/Home" className="btn btn-primary"> Go </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="wd-dashboard-course col" style={{width: "300px"}}>
-              <div className="card" style={{height: "280px"}}>
-                <img src="/images/cs5610.jpg" alt="CS 5610"
-                     style={{width: "100%", height: "200px", objectFit: "cover"}}/>
-                <div className="card-body" style={{height: "300px"}}>
-                  <a className="wd-dashboard-course-link"
-                     href="#/Kanbas/Courses/5610/Home"
-                     style={{textDecoration: "none", color: "navy", fontWeight: "bold"}}>
-                    CS 5004
-                  </a>
-                  <p className="wd-dashboard-course-title card-text">
-                    Web Development
-                  </p>
-                  <a href="#/Kanbas/Courses/5610/Home" className="btn btn-primary"> Go </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="wd-dashboard-course col" style={{width: "300px"}}>
-              <div className="card" style={{height: "280px"}}>
-                <img src="/images/cs5800.jpg" alt="CS 5800"
-                     style={{width: "100%", height: "200px", objectFit: "cover"}}/>
-                <div className="card-body" style={{height: "300px"}}>
-                  <a className="wd-dashboard-course-link"
-                     href="#/Kanbas/Courses/5800/Home"
-                     style={{textDecoration: "none", color: "navy", fontWeight: "bold"}}>
-                    CS 5004
-                  </a>
-                  <p className="wd-dashboard-course-title card-text">
-                    Algorithms
-                  </p>
-                  <a href="#/Kanbas/Courses/5800/Home" className="btn btn-primary"> Go </a>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
   );
 }
-
-
-
-
