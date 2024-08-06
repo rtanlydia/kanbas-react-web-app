@@ -184,12 +184,12 @@ export default function Quizzes() {
         <div className="d-flex justify-content-between mb-3">
           <div className="input-group w-50">
             <span className="input-group-text"><FaSearch/></span>
-            <input id="wd-search-quiz" className="form-control" placeholder="Search for quizzes" />
+            <input id="wd-search-quiz" className="form-control" placeholder="Search for Quiz" />
           </div>
           <div className="custom-button">
-            <button id="wd-add-quiz-group" className="btn btn-outline-secondary me-2">
-              <HiOutlinePlus className="me-1" style={{fontSize: '24px'}}/> Group
-            </button>
+            {/*<button id="wd-add-quiz-group" className="btn btn-outline-secondary me-2">*/}
+            {/*  <HiOutlinePlus className="me-1" style={{fontSize: '24px'}}/> Group*/}
+            {/*</button>*/}
             <button id="wd-add-quiz" className="btn btn-danger" onClick={addQuiz}>
               <HiOutlinePlus className="me-1" style={{fontSize: '24px'}}/> quiz
             </button>

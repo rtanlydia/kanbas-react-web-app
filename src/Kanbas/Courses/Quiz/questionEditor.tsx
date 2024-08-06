@@ -229,8 +229,11 @@
 import React, { useState } from 'react';
 import { GoTrash } from "react-icons/go";
 import { CiEdit } from "react-icons/ci";
+import {useNavigate, useParams} from "react-router-dom";
+import {FaEdit} from "react-icons/fa";
 
 function QuestionEditor() {
+  const [question, setQuestion] = useState('');
   const [title, setTitle] = useState('');
   const [points, setPoints] = useState(0);
   const [questionType, setQuestionType] = useState('multiple-choice');
@@ -240,6 +243,10 @@ function QuestionEditor() {
     { text: '', isCorrect: false },
     { text: '', isCorrect: false }
   ]);
+  const navigate = useNavigate();
+  const { cid, qid } = useParams<{ cid: string, qid: string }>();
+
+
 
   const handleChoiceChange = (index: number, text: string, isCorrect: boolean) => {
     const newChoices = choices.map((choice, i) =>
@@ -257,14 +264,66 @@ function QuestionEditor() {
   };
 
   const handleCancel = () => {
-    // Logic to handle cancel action
-  };
+    navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
+    }
+
+  // const handleSave = () => {
+  //   const questionData = {
+  //     title,
+  //     points,
+  //     question,
+  //     questionType,
+  //     choices
+  //   };
+  //   // Save logic to handle save action (e.g., API call to save the question data)
+  //   console.log('Saving question data:', questionData);
+  // };
 
   const handleSave = () => {
-    // Logic to handle save action
+    const questionData = {
+      title,
+      points,
+      question,
+      questionType,
+      choices
+    };
+
+    // Mock API call to save the question data
+    fetch(`/api/save-question/${cid}/${qid}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(questionData),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Question saved:', data);
+      navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
+    })
+    .catch((error) => {
+      console.error('Error saving question:', error);
+    });
   };
+
+  // const handleEdit = () => {
+  //   // Logic to handle edit action
+  // };
+
   const handleEdit = () => {
-    // Logic to handle edit action
+    // Mock API call to fetch existing question data and populate the form
+    fetch(`/api/get-question/${cid}/${qid}`)
+    .then(response => response.json())
+    .then(data => {
+      setTitle(data.title);
+      setPoints(data.points);
+      setQuestion(data.question); // Set the question content
+      setQuestionType(data.questionType);
+      setChoices(data.choices);
+    })
+    .catch(error => {
+      console.error('Error fetching question:', error);
+    });
   };
 
   const renderAnswersSection = () => {
