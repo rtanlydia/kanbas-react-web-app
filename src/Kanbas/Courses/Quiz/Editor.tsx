@@ -15,6 +15,9 @@ export default function QuizEditor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNewQuiz = qid === "new";
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const [quiz, setQuiz] = useState<any>({
     title: '',
@@ -24,8 +27,11 @@ export default function QuizEditor() {
     assignmentGroup: 'Quizzes',
     shuffleAnswers: false,
     timeLimit: 20,
-    multipleAttempts: false,
+    howManyAttempts: 1,
+    numberOfQuestions: 10,
+    allowMultipleAttempts: false,
     showCorrectAnswers: '',
+    showCorrectAnswersDate: '',
     accessCode: '',
     oneQuestionAtATime: true,
     webcamRequired: false,
@@ -61,7 +67,7 @@ export default function QuizEditor() {
     const { id, value } = e.target;
     setQuiz((prevQuiz: any) => ({
       ...prevQuiz,
-      [id]: value
+      [id]: value,
     }));
   };
 
@@ -69,7 +75,8 @@ export default function QuizEditor() {
     const { id, checked } = e.target;
     setQuiz((prevQuiz: any) => ({
       ...prevQuiz,
-      [id]: checked
+      [id]: checked,
+      howManyAttempts: checked ? (prevQuiz.howManyAttempts || 1) : 1
     }));
   };
 
@@ -86,6 +93,23 @@ export default function QuizEditor() {
     } catch (error) {
       console.error('Error saving quiz:', error);
     }
+  };
+
+  const getQuizStatus = (quiz:any) => {
+    const now = new Date();
+
+    if (quiz.availableFrom && now < quiz.availableFrom) {
+      return `Not available until ${quiz.availableFrom.toLocaleString()}`;
+    }
+
+    if (quiz.availableUntil && now > quiz.availableUntil) {
+      return 'Closed';
+    }
+
+    if (quiz.availableFrom && quiz.availableUntil && now >= quiz.availableFrom && now <= quiz.availableUntil) {
+      return `Available until ${quiz.availableUntil.toLocaleString()}`;
+    }
+    return 'Status unknown';
   };
 
   const handleSaveAndPublish = async () => {
@@ -107,6 +131,20 @@ export default function QuizEditor() {
 
   const handleCancel = () => {
     navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+  };
+
+  const formatDateTime = (date:any) => {
+    if (!date) {
+      return "N/A";
+    }
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
   };
 
   const handleAddQuestion = () => {
@@ -139,6 +177,14 @@ export default function QuizEditor() {
     setQuestions(updatedQuestions);
   };
 
+  const handleAttemptsChange = (event:any) => {
+    const { value } = event.target;
+    setQuiz((prevQuiz:any) => ({
+      ...prevQuiz,
+      howManyAttempts: parseInt(value, 10) || 1
+    }));
+  };
+
   return (
       <div id="wd-quizzes-editor" className="container mt-4">
         <Tabs defaultActiveKey="details" id="quiz-editor-tabs" className="mb-3">
@@ -167,15 +213,15 @@ export default function QuizEditor() {
             </div>
 
             <div className="mb-3 d-flex align-items-center">
-              <label htmlFor="quizType" className="form-label me-2 mb-0 col-md-2" style={{whiteSpace: 'nowrap'}}>
+              <label htmlFor="assignmentGroup" className="form-label me-2 mb-0 col-md-2" style={{whiteSpace: 'nowrap'}}>
                 Assignment Group
               </label>
-              <select id="quizType" className="form-select" value={quiz.quizType} onChange={handleChange}
+              <select id="assignmentGroup" className="form-select" value={quiz.assignmentGroup} onChange={handleChange}
                       style={{flex: 0.341}}>
-                <option value="Graded Quiz">Quizzes</option>
-                <option value="Practice Quiz">Exams</option>
-                <option value="Graded Survey">Assignments</option>
-                <option value="Ungraded Survey">Project</option>
+                <option value="Quizzes">Quizzes</option>
+                <option value="Exams">Exams</option>
+                <option value="Assignments">Assignments</option>
+                <option value="Project">Project</option>
               </select>
             </div>
 
@@ -201,23 +247,45 @@ export default function QuizEditor() {
                        onChange={handleChange}/>
               </div>
             </div>
+            {/*<div className="mb-3">*/}
+            {/*  <label htmlFor="multipleAttempts" className="form-label me-2">Allow Multiple Attempts</label>*/}
+            {/*  <input id="multipleAttempts" className="form-check-input" type="checkbox" checked={quiz.allowMultipleAttempts}*/}
+            {/*         onChange={handleCheckboxChange}/>*/}
+            {/*</div>*/}
             <div className="mb-3">
-              <label htmlFor="multipleAttempts" className="form-label me-2">Allow Multiple Attempts</label>
-              <input id="multipleAttempts" className="form-check-input" type="checkbox" checked={quiz.multipleAttempts}
-                     onChange={handleCheckboxChange}/>
+              <label htmlFor="allowMultipleAttempts" className="form-label me-2">Allow Multiple Attempts</label>
+              <input id="allowMultipleAttempts" className="form-check-input" type="checkbox" checked={quiz.allowMultipleAttempts}
+                     onChange={handleCheckboxChange} />
             </div>
-            <div className="mb-3">
-              <label htmlFor="showCorrectAnswers" className="form-label me-2">Show Correct Answers</label>
-              <input id="showCorrectAnswers" className="form-check-input ms-2" type="checkbox"
-                     checked={quiz.showCorrectAnswers}
-                     onChange={handleCheckboxChange}/>
 
-              <div className="col-md-4">
-                <input id="showCorrectAnswers" className="form-control" type="datetime-local"
-                       value={quiz.showCorrectAnswers}
-                       onChange={handleChange}/>
+            {quiz.allowMultipleAttempts && (
+              <div className="mb-3">
+                <label htmlFor="allowMultipleAttempts" className="form-label me-2">How many Attempts</label>
+                <input id="allowMultipleAttempts" className="form-control" type="number" min="1" value={quiz.howManyAttempts}
+                       onChange={handleAttemptsChange} />
               </div>
+            )}
+            <div className="mb-3">
+              <div className="form-check">
+                <input id="showCorrectAnswers" className="form-check-input" type="checkbox"
+                       checked={quiz.showCorrectAnswers}
+                       onChange={handleCheckboxChange}/>
+                <label htmlFor="showCorrectAnswers" className="form-check-label ms-2">Show Correct Answers</label>
+              </div>
+
+              {quiz.showCorrectAnswers && (
+                <div className="mt-3">
+                  <label htmlFor="showCorrectAnswersDate" className="form-label">Show Correct Answers Date</label>
+                  <div className="d-flex align-items-center">
+                    <span className="me-3">{formatDateTime(quiz.showCorrectAnswersDate)}</span>
+                    <input id="showCorrectAnswersDate" className="form-control" type="datetime-local"
+                           value={quiz.showCorrectAnswersDate || ""}
+                           onChange={handleChange} style={{maxWidth: '250px'}}/>
+                  </div>
+                </div>
+              )}
             </div>
+
             <div className="mb-3">
               <label htmlFor="accessCode" className="form-label">Access Code</label>
               <input id="accessCode" className="form-control" type="text" value={quiz.accessCode}
@@ -239,29 +307,38 @@ export default function QuizEditor() {
               <input id="lockQuestionsAfterAnswering" className="form-check-input" type="checkbox"
                      checked={quiz.lockQuestionsAfterAnswering} onChange={handleCheckboxChange}/>
             </div>
-            <div className="row mb-3">
+            <div className="row mb-3 align-items-center">
               <div className="col-md-2">
                 <label htmlFor="dueDate" className="form-label">Due Date</label>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-3">
+                <td>{formatDateTime(quiz.dueDate)}</td>
+              </div>
+              <div className="col-md-5">
                 <input id="dueDate" className="form-control" type="datetime-local" value={quiz.dueDate}
                        onChange={handleChange}/>
               </div>
             </div>
-            <div className="row mb-3">
+            <div className="row mb-3 align-items-center">
               <div className="col-md-2">
                 <label htmlFor="availableFrom" className="form-label">Available From</label>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-3">
+                <td>{formatDateTime(quiz.availableFrom)}</td>
+              </div>
+              <div className="col-md-5">
                 <input id="availableFrom" className="form-control" type="datetime-local" value={quiz.availableFrom}
                        onChange={handleChange}/>
               </div>
             </div>
-            <div className="row mb-3">
+            <div className="row mb-3 align-items-center">
               <div className="col-md-2">
                 <label htmlFor="availableUntil" className="form-label">Available Until</label>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-3">
+                <td>{formatDateTime(quiz.availableUntil)}</td>
+              </div>
+              <div className="col-md-5">
                 <input id="availableUntil" className="form-control" type="datetime-local" value={quiz.availableUntil}
                        onChange={handleChange}/>
               </div>
@@ -306,6 +383,10 @@ export default function QuizEditor() {
               <Button variant="secondary" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}`)}>
                 + New Question</Button>
             </div>
+            {/*<div className="mb-3 text-center position-fixed top-0 end-0 bottom-0 bg-white p-4 shadow w-25">*/}
+            {/*  <Button variant="secondary" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}`)}>*/}
+            {/*    + New Question</Button>*/}
+            {/*</div>*/}
           </Tab>
         </Tabs>
         <hr/>

@@ -27,6 +27,20 @@ export default function QuizDetail() {
     navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
   };
 
+  const formatDateTime = (date:any) => {
+    if (!date) {
+      return "N/A";
+    }
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  };
+
   if (!quiz) {
     return <div>Loading...</div>;
   }
@@ -54,12 +68,13 @@ export default function QuizDetail() {
             <p><strong>Assignment Group:</strong> {quiz.assignmentGroup}</p>
             <p><strong>Shuffle Answers:</strong> {quiz.shuffleAnswers ? 'No' : 'Yes'}</p>
             <p><strong>Time Limit:</strong> {quiz.timeLimit} Minutes</p>
-            <p><strong>Multiple Attempts:</strong> {quiz.multipleAttempts ? 'Yes' : 'No'}</p>
-            <p><strong>How Many Attempts:</strong> {quiz.Attempts}</p>
-            <p><strong>Show Correct Answers:</strong> {quiz.showCorrectAnswers}</p>
-            <p><strong>Access Code:</strong> {quiz.AccessCode}</p>
+            <p><strong>Multiple Attempts:</strong> {quiz.allowMultipleAttempts ? 'Yes' : 'No'}</p>
+            <p><strong>How Many Attempts:</strong> {quiz.howManyAttempts}</p>
+            <p><strong>Show Correct Answers:</strong> {formatDateTime(quiz.showCorrectAnswersDate)}</p>
+            <p><strong>Access Code:</strong> {quiz.accessCode}</p>
             <p><strong>One Question at a Time:</strong> {quiz.oneQuestionAtATime ? 'Yes' : 'No'}</p>
             <p><strong>Webcam Required:</strong> {quiz.webcamRequired ? 'Yes' : 'No'}</p>
+            <p><strong>Number of Questions:</strong> {quiz.numberOfQuestions}</p>
             <p><strong>Lock Questions After Answering:</strong> {quiz.lockQuestionsAfterAnswering ? 'Yes' : 'No'}</p>
           </div>
         </div>
@@ -67,17 +82,17 @@ export default function QuizDetail() {
           <thead>
           <tr>
             <th>Due</th>
-            <th>For</th>
+            {/*<th>For</th>*/}
             <th>Available from</th>
             <th>Until</th>
           </tr>
           </thead>
           <tbody>
           <tr>
-            <td>{quiz.dueDate}</td>
-            <td>{quiz.for}</td>
-            <td>{quiz.availableFrom}</td>
-            <td>{quiz.availableUntil}</td>
+            <td>{formatDateTime(quiz.dueDate)}</td>
+            {/*<td>{quiz.for}</td>*/}
+            <td>{formatDateTime(quiz.availableFrom)}</td>
+            <td>{formatDateTime(quiz.availableUntil)}</td>
           </tr>
           </tbody>
         </table>

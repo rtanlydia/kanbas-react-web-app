@@ -141,10 +141,43 @@ export default function Quizzes() {
     }
   };
 
+  const formatDateTime = (date:any) => {
+    if (!date) {
+      return "N/A";
+    }
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  };
+
+  const getQuizStatus = (quiz:any) => {
+    const now = new Date();
+    const availableFrom = quiz.availableFrom ? new Date(quiz.availableFrom) : null;
+    const availableUntil = quiz.availableUntil ? new Date(quiz.availableUntil) : null;
+    if (availableFrom && now < availableFrom) {
+      return `Not available until ${formatDateTime(availableFrom)}`;
+    }
+
+    if (availableUntil && now > availableUntil) {
+      return 'Closed';
+    }
+
+    if (availableFrom && availableUntil && now >= availableFrom && now <= availableUntil) {
+      return `Available until ${formatDateTime(availableUntil)}`;
+    }
+    return 'Status unknown';
+  };
+
   const publishQuiz = async (quizId: string, publish: boolean) => {
     // Implement your publish/unpublish logic here
     // Example: await client.publishQuiz(quizId, publish);
   };
+  //const quizStatus = getQuizStatus(quiz);
 
   return (
       <div id="wd-quizzes" className="container mt-4">
@@ -183,10 +216,11 @@ export default function Quizzes() {
                     <div className="d-flex align-items-center">
                       <span className="custom-text-color-multiple-module me-2">Multiple Modules</span>
                       <span className="text-muted me-2">|</span>
-                      <span className="text-muted"><span className="fw-bold">Available until</span> {quiz.availableUntil || 'N/A'}</span>
+                      {/*<span className="text-muted"><span className="fw-bold">Available until</span> {quiz.availableUntil || 'N/A'}</span>*/}
+                      <span className="text-muted">{getQuizStatus(quiz)}</span>
                     </div>
                     <div className="small text-muted mt-1">
-                      <span className="fw-bold">Due</span> {quiz.dueDate || 'N/A'} | {quiz.points || 100} pts
+                      <span className="fw-bold">Due</span> {formatDateTime(quiz.dueDate) || 'N/A'} | {quiz.points || 100} pts
                     </div>
                   </div>
                 </div>
