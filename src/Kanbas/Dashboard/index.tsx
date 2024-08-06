@@ -3,7 +3,7 @@ import db from "../Database";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import accountReducer, {setCurrentUser} from "../Account/reducer";
-import { enrollInCourse } from "./client";
+import {enrollInCourse, getEnrolledCourses} from "./client";
 import {Navigate} from "react-router";
 
 
@@ -20,16 +20,26 @@ export default function Dashboard(
   currentUser = useSelector((state: any) => state.accountReducer.currentUser);
   const dispatch = useDispatch();
   const [displayedCourses, setDisplayedCourses] = useState<any[]>(courses);
+
+
   useEffect(() => {
-    if (currentUser?.role === "STUDENT") {
-      setDisplayedCourses(currentUser.enrolledCourses || []);
-    } else {
-      setDisplayedCourses(courses);
-    }
+    const fetchEnrolledCourses = async () => {
+      if (currentUser?.role === "STUDENT") {
+        try {
+          const enrolledCourses = await getEnrolledCourses(currentUser._id);
+          setDisplayedCourses(enrolledCourses);
+          console.log("Enrolled Courses: ", enrolledCourses); // 在控制台中打印出已注册的课程
+        } catch (error) {
+          console.error("Failed to fetch enrolled courses", error);
+        }
+      } else {
+        setDisplayedCourses(courses);
+      }
+    };
+
+    fetchEnrolledCourses();
   }, [currentUser, courses]);
-  // if (currentUser?.role === "STUDENT") {
-  //   return <Navigate to="/Kanbas/Dashboard" />;
-  // }
+
 
   const enrollInCourseHandler = async (courseId: string) => {
     try {
@@ -55,24 +65,33 @@ export default function Dashboard(
           <div className="row row-cols-1 row-cols-md-5 g-4">
             {displayedCourses.map((course) => (
 
-              <div key={course._id} className="wd-dashboard-course col" style={{ width: "300px" }}>
+              <div className="wd-dashboard-course col" style={{width: "300px"}}>
                 <Link to={`/Kanbas/Courses/${course.number}/Home`} className="text-decoration-none">
+
                   <div className="card rounded-3 overflow-hidden">
-                    <img src="/images/reactjs.jpg" height="160" alt="Course" />
+                    <img src="/images/reactjs.jpg" height="{160}"/>
                     <div className="card-body">
-                      <span className="wd-dashboard-course-link" style={{ textDecoration: "none", color: "navy", fontWeight: "bold" }}>
-                        {course.name}
-                      </span>
-                      <p className="wd-dashboard-course-title card-text" style={{ maxHeight: 53, overflow: "hidden" }}>
+                    <span className="wd-dashboard-course-link"
+                          style={{textDecoration: "none", color: "navy", fontWeight: "bold"}}>
+                      {course.name}
+                    </span>
+                      <p className="wd-dashboard-course-title card-text"
+                         style={{maxHeight: 53, overflow: "hidden"}}>
                         {course.description}
                       </p>
-                      <Link to={`/Kanbas/Courses/${course.number}/Home`} className="btn btn-primary">Go</Link>
+                      <Link to={`/Kanbas/Courses/${course.number}/Home`}
+                            className="btn btn-primary">Go</Link>
                     </div>
                   </div>
                 </Link>
               </div>
             ))}
           </div>
+        </div>
+
+
+        <div style={{ marginTop: "20px" }}>
+          <Link to="/Kanbas/RegisterCourses" className="btn btn-success">Register for New Courses</Link>
         </div>
       </div>
     );

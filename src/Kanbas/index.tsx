@@ -9,7 +9,7 @@ import {Provider, useDispatch, useSelector} from "react-redux";
 import * as client from "./Courses/client";
 import Account from "./Account";
 import ProtectedRoute from "./ProtectedRoute";
-import StudentCourses from "./Dashboard";
+import RegisterCoursePage from "./Dashboard/registerPage";
 
 
 export default function Kanbas() {
@@ -93,16 +93,15 @@ export default function Kanbas() {
                     deleteCourse={deleteCourse}
                     updateCourse={updateCourse}/> </ProtectedRoute>
               } />
-              {/*<Route path="Dashboard/StudentCourses" element={<ProtectedRoute>*/}
-              {/*  <StudentCourses*/}
-              {/*    currentUser={currentUser}*/}
-              {/*    courses={courses}*/}
-              {/*    course={course}*/}
-              {/*    setCourse={setCourse}*/}
-              {/*    addNewCourse={addNewCourse}*/}
-              {/*    deleteCourse={deleteCourse}*/}
-              {/*    updateCourse={updateCourse}/> </ProtectedRoute>*/}
-              {/*} />*/}
+              <Route path="RegisterCourses" element={<ProtectedRoute>
+                <RegisterCoursePage
+                  courses={courses}
+                  course={course}
+                  setCourse={setCourse}
+                  addNewCourse={addNewCourse}
+                  deleteCourse={deleteCourse}
+                  updateCourse={updateCourse}/>
+              </ProtectedRoute>} />
               <Route path="Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses} /></ProtectedRoute>} />
               <Route path="Calendar" element={<h1>Calendar</h1>} />
               <Route path="Inbox" element={<h1>Inbox</h1>} />

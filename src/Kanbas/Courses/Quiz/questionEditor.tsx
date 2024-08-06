@@ -231,6 +231,11 @@ import { GoTrash } from "react-icons/go";
 import { CiEdit } from "react-icons/ci";
 import {useNavigate, useParams} from "react-router-dom";
 import {FaEdit} from "react-icons/fa";
+import * as client from "./client";
+import {addQuizzes, updateQuizzes} from "./reducer";
+import {useDispatch} from "react-redux";
+
+
 
 function QuestionEditor() {
   const [question, setQuestion] = useState('');
@@ -245,7 +250,7 @@ function QuestionEditor() {
   ]);
   const navigate = useNavigate();
   const { cid, qid } = useParams<{ cid: string, qid: string }>();
-
+  const dispatch = useDispatch();
 
 
   const handleChoiceChange = (index: number, text: string, isCorrect: boolean) => {
@@ -267,19 +272,8 @@ function QuestionEditor() {
     navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
     }
 
-  // const handleSave = () => {
-  //   const questionData = {
-  //     title,
-  //     points,
-  //     question,
-  //     questionType,
-  //     choices
-  //   };
-  //   // Save logic to handle save action (e.g., API call to save the question data)
-  //   console.log('Saving question data:', questionData);
-  // };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const questionData = {
       title,
       points,
@@ -288,22 +282,18 @@ function QuestionEditor() {
       choices
     };
 
-    // Mock API call to save the question data
-    fetch(`/api/save-question/${cid}/${qid}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(questionData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Question saved:', data);
+    try {
+      const quiz = await client.findQuizById(qid as string);
+      const updatedQuiz = {
+        ...quiz,
+        questions: [...quiz.questions, questionData]
+      };
+      await client.updateQuiz(updatedQuiz);
+      dispatch(updateQuizzes(updatedQuiz));
       navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
-    })
-    .catch((error) => {
+    } catch (error) {
       console.error('Error saving question:', error);
-    });
+    }
   };
 
   // const handleEdit = () => {
