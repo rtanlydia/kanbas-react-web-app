@@ -300,9 +300,12 @@ function QuestionEditor() {
             value={correctAnswer}
             onChange={(e) => setCorrectAnswer(e.target.value)}
             style={{
-              width: '270%',
+              width: '99%',
               marginBottom: '10px',
+              height: '50px',
               fontSize: '20px',
+              resize: 'none',
+              boxSizing: 'border-box',
               padding: '10px'
             }}
           />

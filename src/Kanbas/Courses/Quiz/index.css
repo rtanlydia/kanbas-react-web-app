@@ -73,3 +73,70 @@
 .custom-tab-title.active {
     color: black;
 }
+
+/*.question-box {*/
+/*    border: 1px solid #ddd;*/
+/*    padding: 16px;*/
+/*    border-radius: 4px;*/
+/*    background-color: #f9f9f9;*/
+/*}*/
+
+/*.question-header {*/
+/*    margin-bottom: 12px;*/
+/*}*/
+
+/*.question-index {*/
+/*    font-weight: bold;*/
+/*    font-size: 16px;*/
+/*}*/
+
+/*.question-text {*/
+/*    margin-top: 8px;*/
+/*    margin-bottom: 16px;*/
+/*    font-size: 14px;*/
+/*}*/
+
+/*.question-options {*/
+/*    margin-bottom: 16px;*/
+/*}*/
+
+/*.option {*/
+/*    margin-bottom: 8px;*/
+/*}*/
+
+/*.option input {*/
+/*    margin-right: 8px;*/
+/*}*/
+
+/*.question-actions {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*}*/
+
+
+.question-box {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.question-header {
+    font-size: 18px;
+}
+
+.question-content {
+    font-size: 20px;
+}
+
+.option {
+    margin: 10px 0;
+}
+
+.question-actions {
+    margin-top: 20px;
+}

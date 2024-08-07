@@ -402,35 +402,79 @@ export default function QuizEditor() {
             </div>
           </Tab>
           <Tab eventKey="questions" title="Questions">
+            {/*<div>*/}
+            {/*  {questions.map((question, index) => (*/}
+            {/*    <div key={index} className="mb-3">*/}
+            {/*      <div className="d-flex justify-content-between align-items-center">*/}
+            {/*        <div>*/}
+            {/*          <span className="me-2">{index + 1}.</span>*/}
+            {/*          <div><strong>Question Text:</strong> {question.questionText}</div>*/}
+            {/*          <div><strong>Question Type:</strong> {question.questionType}</div>*/}
+            {/*          <div><strong>Points:</strong> {question.points}</div>*/}
+            {/*          <div>*/}
+            {/*            <strong>Options:</strong>*/}
+            {/*            <ul>*/}
+            {/*              {question.options.map((option:any, optIndex:any) => (*/}
+            {/*                <li key={optIndex}>*/}
+            {/*                  {option.optionText} {option.isCorrect ? "(Correct)" : ""}*/}
+            {/*                </li>*/}
+            {/*              ))}*/}
+            {/*            </ul>*/}
+            {/*          </div>*/}
+            {/*          <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>*/}
+            {/*        </div>*/}
+            {/*        <div>*/}
+            {/*          <Button variant="secondary" className="me-2" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}/${question._id}`)}>Edit</Button>*/}
+            {/*          <Button variant="danger" onClick={() => handleDeleteQuestion(index)}>Delete</Button>*/}
+            {/*        </div>*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  ))}*/}
+            {/*</div>*/}
+
+
             <div>
               {questions.map((question, index) => (
-                <div key={index} className="mb-3">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <span className="me-2">{index + 1}.</span>
-                      <div><strong>Question Text:</strong> {question.questionText}</div>
-                      <div><strong>Question Type:</strong> {question.questionType}</div>
-                      <div><strong>Points:</strong> {question.points}</div>
-                      <div>
-                        <strong>Options:</strong>
-                        <ul>
-                          {question.options.map((option:any, optIndex:any) => (
-                            <li key={optIndex}>
-                              {option.optionText} {option.isCorrect ? "(Correct)" : ""}
-                            </li>
-                          ))}
-                        </ul>
+                  <div key={index} className="question-box mb-3">
+                    <div className="question-header d-flex justify-content-between align-items-center">
+                      <div className="question-title">
+                        <span className="question-index">{`Question ${index + 1}`}</span>
                       </div>
-                      <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
+                      <div className="question-points">
+                        {`${question.points} pts`}
+                      </div>
                     </div>
-                    <div>
-                      <Button variant="secondary" className="me-2" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}/${question._id}`)}>Edit</Button>
-                      <Button variant="danger" onClick={() => handleDeleteQuestion(index)}>Delete</Button>
+                    <hr/>
+                    <div className="question-content">
+                      <div className="question-text">{question.questionText}</div>
+                      <hr/>
+                      <div className="question-options">
+                        {question.options.map((option: { optionText: React.ReactNode; }, optIndex: string | number | bigint | null | undefined) => (
+                            <div key={optIndex} className="option">
+                              <input type="radio" name={`question-${index}`} id={`option-${optIndex}`}/>
+                              <label htmlFor={`option-${optIndex}`}>{option.optionText}</label>
+                            </div>
+                        ))}
+                      </div>
+                    </div>
+                    <hr/>
+                    <div className="question-actions d-flex justify-content-end">
+                      <Button
+                          variant="secondary"
+                          className="me-2"
+                          onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}/${question._id}`)}
+                      >
+                        Edit
+                      </Button>
+                      <Button variant="danger" onClick={() => handleDeleteQuestion(index)}>
+                        Delete
+                      </Button>
                     </div>
                   </div>
-                </div>
               ))}
             </div>
+
+
             <div className="mb-3 text-center">
               <Button variant="secondary" onClick={() => handleAddNewQuestion()}>
                 + New Question</Button>
