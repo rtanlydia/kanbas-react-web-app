@@ -71,6 +71,7 @@ export default function QuizEditor() {
     }));
   };
 
+
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, checked } = e.target;
     setQuiz((prevQuiz: any) => ({
@@ -82,18 +83,25 @@ export default function QuizEditor() {
 
   const handleSave = async () => {
     try {
+      const quizToSave = { ...quiz, questions };
+      console.log('Saving quiz:', quizToSave);
       if (isNewQuiz) {
-        const createdQuiz = await client.createQuiz(cid as string, quiz);
+        const createdQuiz = await client.createQuiz(cid as string, quizToSave);
+        console.log('Created quiz:', createdQuiz);
         dispatch(addQuizzes(createdQuiz));
+        navigate(`/Kanbas/Courses/${cid}/QuizDetail/${createdQuiz._id}`);
       } else {
-        await client.updateQuiz({ ...quiz, _id: qid as string, course: cid });
-        dispatch(updateQuizzes({ ...quiz, _id: qid as string, course: cid }));
+        const updatedQuiz = await client.updateQuiz({ ...quizToSave, _id: qid as string, course: cid });
+        console.log('Updated quiz:', updatedQuiz);
+        dispatch(updateQuizzes(updatedQuiz));
+        navigate(`/Kanbas/Courses/${cid}/QuizDetail/${qid}`);
       }
-      navigate(`/Kanbas/Courses/${cid}/QuizDetail/${qid}`);
     } catch (error) {
       console.error('Error saving quiz:', error);
     }
   };
+
+
 
   const getQuizStatus = (quiz:any) => {
     const now = new Date();
@@ -133,6 +141,10 @@ export default function QuizEditor() {
     navigate(`/Kanbas/Courses/${cid}/Quizzes`);
   };
 
+  const handleCancelQuestionEditor = () => {
+    navigate(`/Kanbas/Courses/${cid}/QuizDetail/${qid}`);
+  };
+
   const formatDateTime = (date:any) => {
     if (!date) {
       return "N/A";
@@ -145,6 +157,11 @@ export default function QuizEditor() {
       minute: '2-digit',
       hour12: false
     });
+  };
+
+  const handleDeleteQuestion = (index: number) => {
+    const updatedQuestions = questions.filter((_, i) => i !== index);
+    setQuestions(updatedQuestions);
   };
 
   const handleAddQuestion = () => {
@@ -173,7 +190,9 @@ export default function QuizEditor() {
   };
 
   const handleCancelQuestion = (index: number) => {
-    const updatedQuestions = questions.filter((_, i) => i !== index);
+    const updatedQuestions = questions.map((question, i) =>
+      i === index ? { ...question, editMode: false } : question
+    );
     setQuestions(updatedQuestions);
   };
 
@@ -184,6 +203,44 @@ export default function QuizEditor() {
       howManyAttempts: parseInt(value, 10) || 1
     }));
   };
+
+  const handleAddNewQuestion = async () => {
+    const newQuestion = {
+      questionText: 'New Question',
+      questionType: 'Multiple Choice',
+      questionTitle: '',
+      points: 0,
+      options: [
+        { optionText: '', isCorrect: false },
+        { optionText: '', isCorrect: false },
+        { optionText: '', isCorrect: false },
+        { optionText: '', isCorrect: false }
+      ],
+      correctAnswer: ''
+    };
+
+    try {
+      const updatedQuiz = await client.addQuestionToQuiz(qid as string, newQuestion);
+
+      dispatch(updateQuizzes(updatedQuiz));
+
+      setQuiz((prevQuiz: any) => ({
+        ...prevQuiz,
+        questions: [...prevQuiz.questions, newQuestion]
+      }));
+
+      setQuestions((prevQuestions: any) => [
+        ...prevQuestions,
+        newQuestion
+      ]);
+    } catch (error) {
+      console.error('Error adding new question:', error);
+    }
+  };
+
+
+
+
 
   return (
       <div id="wd-quizzes-editor" className="container mt-4">
@@ -347,51 +404,46 @@ export default function QuizEditor() {
           <Tab eventKey="questions" title="Questions">
             <div>
               {questions.map((question, index) => (
-                  <div key={index} className="mb-3">
-                    {question.editMode ? (
-                        <div>
-                          <Dropdown>
-                            <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                              {question.type}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                              <Dropdown.Item onClick={() => handleQuestionChange(index, 'type', 'Multiple Choice')}>Multiple Choice</Dropdown.Item>
-                              <Dropdown.Item onClick={() => handleQuestionChange(index, 'type', 'True/False')}>True/False</Dropdown.Item>
-                              <Dropdown.Item onClick={() => handleQuestionChange(index, 'type', 'Fill in Multiple Blanks')}>Fill in Multiple Blanks</Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-
-
-                          <Dropdown.Item onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}`)}>
-                            <FaEdit className="me-2"/> questionEditor
-                          </Dropdown.Item>
-
-
-                          <Button variant="danger" className="mt-2" onClick={() => handleSaveQuestion(index)}>Save</Button>
-                          <Button variant="secondary" className="mt-2 ms-2" onClick={() => handleCancelQuestion(index)}>Cancel</Button>
-                        </div>
-                    ) : (
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div>{question.text} ({question.type})</div>
-                          <Button variant="secondary" onClick={() => handleEditQuestion(index)}>Edit</Button>
-                        </div>
-                    )}
+                <div key={index} className="mb-3">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <span className="me-2">{index + 1}.</span>
+                      <div><strong>Question Text:</strong> {question.questionText}</div>
+                      <div><strong>Question Type:</strong> {question.questionType}</div>
+                      <div><strong>Points:</strong> {question.points}</div>
+                      <div>
+                        <strong>Options:</strong>
+                        <ul>
+                          {question.options.map((option:any, optIndex:any) => (
+                            <li key={optIndex}>
+                              {option.optionText} {option.isCorrect ? "(Correct)" : ""}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
+                    </div>
+                    <div>
+                      <Button variant="secondary" className="me-2" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}/${question._id}`)}>Edit</Button>
+                      <Button variant="danger" onClick={() => handleDeleteQuestion(index)}>Delete</Button>
+                    </div>
                   </div>
+                </div>
               ))}
             </div>
             <div className="mb-3 text-center">
-              <Button variant="secondary" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}`)}>
+              <Button variant="secondary" onClick={() => handleAddNewQuestion()}>
                 + New Question</Button>
             </div>
-            {/*<div className="mb-3 text-center position-fixed top-0 end-0 bottom-0 bg-white p-4 shadow w-25">*/}
-            {/*  <Button variant="secondary" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}`)}>*/}
+            {/*<div className="mb-3 text-center">*/}
+            {/*  <Button variant="secondary" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}/addNewQuestion`)}>*/}
             {/*    + New Question</Button>*/}
             {/*</div>*/}
           </Tab>
         </Tabs>
         <hr/>
         <div className="d-flex justify-content-end">
-          <button className="btn btn-secondary me-2" onClick={handleCancel}>Cancel</button>
+          <button className="btn btn-secondary me-2" onClick={handleCancelQuestionEditor}>Cancel</button>
           <button className="btn btn-danger me-2" onClick={handleSaveAndPublish}>Save and Publish</button>
           <button className="btn btn-danger" onClick={handleSave}>Save</button>
         </div>

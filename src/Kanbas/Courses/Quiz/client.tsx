@@ -27,3 +27,13 @@ export const findQuizById = async (quizId: string) => {
   const response = await axios.get(`${QUIZZES_API}/${quizId}`);
   return response.data;
 };
+
+export const addQuestionToQuiz = async (quizId: string, question: any) => {
+  try {
+    const response = await axios.put(`${QUIZZES_API}/${quizId}/questions`, question);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding question to quiz:', error);
+    throw error;
+  }
+};

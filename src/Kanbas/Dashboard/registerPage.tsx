@@ -57,9 +57,16 @@ export default function RegisterCoursePage(
                 <p><strong>End Date:</strong> {course.endDate ? new Date(course.endDate).toLocaleDateString() : "No end date provided"}</p>
                 <p><strong>Department:</strong> {course.department || "No department provided"}</p>
                 <p><strong>Credits:</strong> {course.credits || "No credits provided"}</p>
-                <button onClick={() => enrollInCourseHandler(course._id)} className="btn btn-secondary">
+                <button
+                  onClick={() => enrollInCourseHandler(course._id)}
+                  className={`btn ${enrolledCourses.includes(course._id) ? "btn-secondary" : "btn-primary"}`}
+                  style={{
+                    backgroundColor: enrolledCourses.includes(course._id) ? 'gray' : 'blue'
+                  }}
+                >
                   {enrolledCourses.includes(course._id) ? "Enrolled" : "Enroll"}
                 </button>
+
               </div>
             </div>
           </div>
