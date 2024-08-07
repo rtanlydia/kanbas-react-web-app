@@ -28,7 +28,7 @@ export default function Dashboard(
         try {
           const enrolledCourses = await getEnrolledCourses(currentUser._id);
           setDisplayedCourses(enrolledCourses);
-          console.log("Enrolled Courses: ", enrolledCourses); // 在控制台中打印出已注册的课程
+          console.log("Enrolled Courses: ", enrolledCourses);
         } catch (error) {
           console.error("Failed to fetch enrolled courses", error);
         }
@@ -52,48 +52,62 @@ export default function Dashboard(
 
   if (currentUser?.role === "STUDENT") {
     return (
-      <div id="wd-dashboard" style={{ marginLeft: "30px", marginTop: "30px" }}>
-        <h1 id="wd-dashboard-title" style={{ marginBottom: "20px" }}>Dashboard</h1>
-        <hr />
-        <div>
-          <h3>Welcome, {currentUser?.username || "User"}!</h3>
-          <p>Role: {currentUser?.role || "N/A"}</p>
-        </div>
-        <h2 id="wd-dashboard-published" style={{ marginLeft: "30px" }}>Enrolled Courses ({displayedCourses.length})</h2>
-        <hr />
-        <div id="wd-dashboard-courses" className="row">
-          <div className="row row-cols-1 row-cols-md-5 g-4">
-            {displayedCourses.map((course) => (
+        <div id="wd-dashboard" style={{marginLeft: "30px", marginTop: "30px"}}>
+          <h1 id="wd-dashboard-title" style={{marginBottom: "20px"}}>Dashboard</h1>
+          <hr/>
+          <div>
+            <h3>Welcome, {currentUser?.username || "User"}!</h3>
+            <p>Role: {currentUser?.role || "N/A"}</p>
+          </div>
+          <br/>
+          <h2 id="wd-dashboard-published" style={{marginLeft: "30px"}}>Enrolled Courses ({displayedCourses.length})</h2>
+          <hr/>
+          <div id="wd-dashboard-courses" className="row">
+            <div className="row row-cols-1 row-cols-md-5 g-4">
+              {displayedCourses.map((course) => (
 
-              <div className="wd-dashboard-course col" style={{width: "300px"}}>
-                <Link to={`/Kanbas/Courses/${course.number}/Home`} className="text-decoration-none">
+                  <div className="wd-dashboard-course col" style={{width: "300px"}}>
+                    <Link to={`/Kanbas/Courses/${course.number}/Home`} className="text-decoration-none">
 
-                  <div className="card rounded-3 overflow-hidden">
-                    <img src="/images/reactjs.jpg" height="{160}"/>
-                    <div className="card-body">
+                      <div className="card rounded-3 overflow-hidden">
+                        <img src="/images/reactjs.jpg" height="{160}"/>
+                        <div className="card-body">
                     <span className="wd-dashboard-course-link"
                           style={{textDecoration: "none", color: "navy", fontWeight: "bold"}}>
                       {course.name}
                     </span>
-                      <p className="wd-dashboard-course-title card-text"
-                         style={{maxHeight: 53, overflow: "hidden"}}>
-                        {course.description}
-                      </p>
-                      <Link to={`/Kanbas/Courses/${course.number}/Home`}
-                            className="btn btn-primary">Go</Link>
-                    </div>
+                          <p className="wd-dashboard-course-title card-text"
+                             style={{maxHeight: 53, overflow: "hidden"}}>
+                            {course.description}
+                          </p>
+                          <Link to={`/Kanbas/Courses/${course.number}/Home`}
+                                className="btn btn-primary">Go</Link>
+                        </div>
+                      </div>
+                    </Link>
                   </div>
-                </Link>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
 
 
-        <div style={{ marginTop: "20px" }}>
-          <Link to="/Kanbas/RegisterCourses" className="btn btn-success">Register for New Courses</Link>
+          {/*<div style={{ marginTop: "20px" }}>*/}
+          {/*  <Link to="/Kanbas/RegisterCourses" className="btn btn-danger me-2"> + Register for New Courses</Link>*/}
+          {/*</div>*/}
+          <div style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "10vh"
+          }}>
+            <Link to="/Kanbas/RegisterCourses" className="btn btn-danger me-2"
+                  style={{fontSize: "20px", padding: "10px 25px"}}>
+              + Register for New Courses
+            </Link>
+          </div>
+
         </div>
-      </div>
     );
   }
 
