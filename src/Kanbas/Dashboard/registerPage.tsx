@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { setCurrentUser } from "../Account/reducer";
-import { enrollInCourse, getAllCourses } from "./client";
+import { enrollInCourse, getAllCourses, getEnrolledCourses } from "./client";
 
 export default function RegisterCoursePage(
   { courses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
@@ -11,21 +10,52 @@ export default function RegisterCoursePage(
     setCourse: (course: any) => void;
     addNewCourse: () => void;
     deleteCourse: (course: any) => void;
-    updateCourse: () => void;
+    updateCourse: (course: any) => void;
   }
 ) {
-
   const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
   const dispatch = useDispatch();
-  //const [allCourses, setAllCourses] = useState<any[]>([]);
+  //const [allCourses, setAllCourses] = useState<any[]>(courses);
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>(currentUser?.enrolledCourses || []);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // const fetchCourses = async () => {
+    //   try {
+    //     const coursesData = await getAllCourses();
+    //     console.log('Fetched courses:', coursesData); // 添加日志
+    //     setAllCourses(coursesData);
+    //   } catch (error) {
+    //     console.error("Failed to fetch courses", error);
+    //   }
+    // };
+
+    const fetchEnrolledCourses = async () => {
+      try {
+        const enrolledCoursesData = await getEnrolledCourses(currentUser._id);
+        console.log('Fetched enrolled courses:', enrolledCoursesData); // 添加日志
+        setEnrolledCourses(enrolledCoursesData.map((course: any) => course._id.toString())); // 只存储课程ID并转换为字符串
+      } catch (error) {
+        console.error("Failed to fetch enrolled courses", error);
+      }
+    };
+
+    //fetchCourses();
+    fetchEnrolledCourses();
+  }, [currentUser._id]);
 
   const enrollInCourseHandler = async (courseId: string) => {
     try {
+      setError(null);
+      if (enrolledCourses.includes(courseId)) {
+        window.alert("You are already enrolled in this course.");
+        return;
+      }
       const updatedUser = await enrollInCourse(currentUser._id, courseId);
       dispatch(setCurrentUser(updatedUser));
-      setEnrolledCourses(updatedUser.enrolledCourses);
+      setEnrolledCourses(updatedUser.enrolledCourses.map((course: any) => course._id.toString()));
     } catch (error) {
+      setError(error.message);
       console.error("Failed to enroll in course", error);
     }
   };
@@ -38,6 +68,7 @@ export default function RegisterCoursePage(
         <h3>Welcome, {currentUser?.username || "User"}!</h3>
         <p>Role: {currentUser?.role || "N/A"}</p>
       </div>
+      {error && <div className="alert alert-danger" role="alert">{error}</div>}
       <h2 id="wd-all-courses" style={{ marginLeft: "30px" }}>All Courses ({courses.length})</h2>
       <hr />
       <div className="row row-cols-1 row-cols-md-5 g-4">
@@ -60,13 +91,10 @@ export default function RegisterCoursePage(
                 <button
                   onClick={() => enrollInCourseHandler(course._id)}
                   className={`btn ${enrolledCourses.includes(course._id) ? "btn-secondary" : "btn-primary"}`}
-                  style={{
-                    backgroundColor: enrolledCourses.includes(course._id) ? 'gray' : 'blue'
-                  }}
+                  disabled={enrolledCourses.includes(course._id)}
                 >
                   {enrolledCourses.includes(course._id) ? "Enrolled" : "Enroll"}
                 </button>
-
               </div>
             </div>
           </div>

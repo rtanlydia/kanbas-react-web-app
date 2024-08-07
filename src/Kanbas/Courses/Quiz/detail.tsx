@@ -27,6 +27,10 @@ export default function QuizDetail() {
     navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
   };
 
+  const handlePreview = () => {
+    navigate(`/Kanbas/Courses/${cid}/QuizDetail/${qid}/TakeQuiz`);
+  };
+
   const formatDateTime = (date:any) => {
     if (!date) {
       return "N/A";
@@ -50,7 +54,7 @@ export default function QuizDetail() {
         <div>
           <div style={{textAlign: 'center'}}>
             <div>
-              <button className="btn btn-secondary me-2">Preview</button>
+              <button className="btn btn-secondary me-2" onClick={handlePreview}>Preview</button>
               <button className="btn btn-danger" onClick={handleEdit}>Edit</button>
             </div>
           </div>

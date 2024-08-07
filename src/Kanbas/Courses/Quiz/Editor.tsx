@@ -211,28 +211,33 @@ export default function QuizEditor() {
       questionTitle: '',
       points: 0,
       options: [
-        { optionText: '', isCorrect: false },
-        { optionText: '', isCorrect: false },
-        { optionText: '', isCorrect: false },
-        { optionText: '', isCorrect: false }
+        { optionText: 'default1', isCorrect: true },
+        { optionText: 'default2', isCorrect: false },
+        { optionText: 'default3', isCorrect: false },
+        { optionText: 'default4', isCorrect: false }
       ],
-      correctAnswer: ''
+      correctAnswer: 'default1'
     };
 
     try {
       const updatedQuiz = await client.addQuestionToQuiz(qid as string, newQuestion);
-
       dispatch(updateQuizzes(updatedQuiz));
 
-      setQuiz((prevQuiz: any) => ({
-        ...prevQuiz,
-        questions: [...prevQuiz.questions, newQuestion]
-      }));
 
-      setQuestions((prevQuestions: any) => [
-        ...prevQuestions,
-        newQuestion
-      ]);
+      // setQuiz((prevQuiz: any) => ({
+      //   ...prevQuiz,
+      //   questions: [...prevQuiz.questions, newQuestion]
+      // }));
+      // setQuestions((prevQuestions: any) => [
+      //   ...prevQuestions,
+      //   newQuestion
+      // ]);
+      setQuiz(updatedQuiz);
+      setQuestions(updatedQuiz.questions);
+
+      // 找到新添加的问题并获取它的 _id
+      const newQuestionId = updatedQuiz.questions[updatedQuiz.questions.length - 1]._id;
+
     } catch (error) {
       console.error('Error adding new question:', error);
     }
@@ -440,6 +445,9 @@ export default function QuizEditor() {
                       <div className="question-title">
                         <span className="question-index">{`Question ${index + 1}`}</span>
                       </div>
+                      <div className="question-littleTitle">
+                        <span className="question-little">{question.questionTitle}</span>
+                      </div>
                       <div className="question-points">
                         {`${question.points} pts`}
                       </div>
@@ -449,14 +457,18 @@ export default function QuizEditor() {
                       <div className="question-text">{question.questionText}</div>
                       <hr/>
                       <div className="question-options">
-                        {question.options.map((option: { optionText: React.ReactNode; }, optIndex: string | number | bigint | null | undefined) => (
-                            <div key={optIndex} className="option">
-                              <input type="radio" name={`question-${index}`} id={`option-${optIndex}`}/>
-                              <label htmlFor={`option-${optIndex}`}>{option.optionText}</label>
-                            </div>
+                        {question.options.map((option: { optionText: string; isCorrect: boolean }, optIndex: number) => (
+                          <div key={optIndex} className="option">
+                            <input type="radio" name={`question-${index}`} id={`option-${optIndex}`}/>
+                            <label htmlFor={`option-${optIndex}`}>
+                              {option.optionText} {option.isCorrect ? "(Correct)" : ""}
+                            </label>
+                          </div>
                         ))}
+
                       </div>
                     </div>
+                    <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
                     <hr/>
                     <div className="question-actions d-flex justify-content-end">
                       <Button

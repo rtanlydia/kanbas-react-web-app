@@ -7,9 +7,9 @@ import { useDispatch } from "react-redux";
 import { updateQuizzes } from "./reducer";
 
 function QuestionEditor() {
-  const [title, setTitle] = useState('');
   const [points, setPoints] = useState(0);
   const [questionText, setQuestionText] = useState('');
+  const [questionTitle, setQuestionTitle] = useState('');
   const [questionType, setQuestionType] = useState('Multiple Choice');
   const [choices, setChoices] = useState([
     { text: '', isCorrect: false },
@@ -33,7 +33,7 @@ function QuestionEditor() {
           if (questionId) {
             const question = fetchedQuiz.questions.find((q: any) => q._id === questionId);
             if (question) {
-              setTitle(question.questionText);
+              setQuestionTitle(question.questionTitle);
               setPoints(question.points);
               setQuestionText(question.questionText);
               setQuestionType(question.questionType);
@@ -44,16 +44,17 @@ function QuestionEditor() {
               setCorrectAnswer(question.correctAnswer);
             }
           } else {
-            setTitle('');
+            setQuestionTitle('');
             setPoints(0);
             setQuestionText('New Question');
             setQuestionType('Multiple Choice');
             setChoices([
-              { text: '', isCorrect: false },
-              { text: '', isCorrect: false },
-              { text: '', isCorrect: false },
-              { text: '', isCorrect: false }
+              { text: 'Default1', isCorrect: true },
+              { text: 'Default2', isCorrect: false },
+              { text: 'Default3', isCorrect: false },
+              { text: 'Default4', isCorrect: false }
             ]);
+            setCorrectAnswer('Default1');
           }
         } catch (error) {
           console.error('Error fetching quiz:', error);
@@ -67,10 +68,11 @@ function QuestionEditor() {
 
   const handleChoiceChange = (index: number, text: string, isCorrect: boolean) => {
     const newChoices = choices.map((choice, i) =>
-      i === index ? { ...choice, text, isCorrect } : choice
+      i === index ? { ...choice, text, isCorrect } : { ...choice, isCorrect: false }
     );
     setChoices(newChoices);
   };
+
 
 
 
@@ -90,6 +92,7 @@ function QuestionEditor() {
     if (quiz) {
       const questionData = {
         questionText: questionText,
+        questionTitle,
         points,
         questionType,
         options: choices.map((choice) => ({
@@ -147,7 +150,15 @@ function QuestionEditor() {
                   onChange={(e) => handleChoiceChange(index, e.target.value, choice.isCorrect)}
                   style={{ flex: 1, marginRight: '10px', fontSize: '20px', marginTop: '20px' }}
                 />
-                <CiEdit className="alert-primary" onClick={handleSave} style={{ marginLeft: '120px', marginTop: '20px' }} />
+                <input
+                  type="radio"
+                  name="multiple-choice"
+                  checked={choice.isCorrect}
+                  onChange={() => handleChoiceChange(index, choice.text, true)}
+                  style={{ marginLeft: '10px', marginTop: '20px' }}
+                />
+                <label style={{ marginLeft: '5px', marginTop: '20px' }}>Correct</label>
+                <CiEdit className="alert-primary" onClick={handleSave} style={{ marginLeft: '10px', marginTop: '20px' }} />
                 <GoTrash className="alert-primary" onClick={() => handleRemoveChoice(index)} style={{ marginLeft: '10px', marginTop: '20px' }} />
               </div>
             ))}
@@ -167,6 +178,8 @@ function QuestionEditor() {
             </button>
           </div>
         );
+
+
       case 'True/False':
         return (
           <div>
@@ -247,12 +260,13 @@ function QuestionEditor() {
         width: '100%'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <label style={{ fontSize: '20px', fontWeight: 'bold', marginRight: '10px' }}>Title:</label>
           <input
             type="text"
             placeholder="Easy Question"
             style={{ padding: '5px', fontSize: '20px', flex: '1' }}
-            value={questionText}
-            onChange={(e) => setQuestionText(e.target.value)}
+            value={questionTitle}
+            onChange={(e) => setQuestionTitle(e.target.value)}
           />
           <select
             value={questionType}
@@ -279,8 +293,8 @@ function QuestionEditor() {
           <h5 style={{ fontWeight: 'bold' }}>Question:</h5>
           <label>
             <textarea
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={questionText}
+              onChange={(e) => setQuestionText(e.target.value)}
               style={{
                 width: '270%',
                 marginBottom: '10px',
