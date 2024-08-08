@@ -52,7 +52,7 @@ export default function ViewLastAttempt() {
   };
 
   return (
-      <div className="quiz-container">
+      <div className="quiz-container, quiz-header">
         {/*<div className="quiz-header">*/}
         {/*  <h1>{quiz?.title}</h1>*/}
         {/*  <p>{quiz?.description}</p>*/}
@@ -63,7 +63,7 @@ export default function ViewLastAttempt() {
         {/*    <p><strong>Last submitted time:</strong> {formatDateTime(attempt?.submittedAt)}</p>*/}
         {/*  </div>*/}
         {/*</div>*/}
-        <div className="quiz-header">
+        <div>
           <h1>{quiz?.title}</h1>
           <p>{quiz?.description}</p>
           <div className="attempt-info">
@@ -73,6 +73,8 @@ export default function ViewLastAttempt() {
             <p><strong>Last submitted time:</strong> {formatDateTime(attempt?.submittedAt)}</p>
           </div>
         </div>
+        <br/>
+        <hr/>
         {attempt && quiz.questions.map((question: any, index: number) => (
             <div key={index} className="question-box mb-3">
               <div className="question-status">
