@@ -118,13 +118,15 @@ export default function TakeQuiz() {
           <hr />
         </div>
       ))}
+      <br/>
+      <hr/>
       <div className="quiz-footer text-right">
         {currentUser?.role === 'FACULTY' && (
           <button className="btn btn-secondary me-2" onClick={handleEdit}>
             Keep Editing Quiz
           </button>
         )}
-        <button className="btn btn-primary" onClick={handleSubmit}>
+        <button className="btn btn-danger" onClick={handleSubmit}>
           Submit Quiz
         </button>
       </div>

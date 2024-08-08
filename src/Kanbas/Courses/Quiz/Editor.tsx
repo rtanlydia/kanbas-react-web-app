@@ -5,10 +5,7 @@ import { addQuizzes, updateQuizzes } from './reducer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import * as client from './client';
-import { Tab, Tabs, Form, Button, InputGroup, FormControl } from 'react-bootstrap';
-import { Dropdown } from 'react-bootstrap';
-import {FaEdit} from "react-icons/fa";
-
+import { Tab, Tabs, Button } from 'react-bootstrap';
 
 
 export default function QuizEditor() {
@@ -471,12 +468,9 @@ export default function QuizEditor() {
               <Button variant="secondary" onClick={() => handleAddNewQuestion()}>
                 + New Question</Button>
             </div>
-            {/*<div className="mb-3 text-center">*/}
-            {/*  <Button variant="secondary" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}/addNewQuestion`)}>*/}
-            {/*    + New Question</Button>*/}
-            {/*</div>*/}
           </Tab>
         </Tabs>
+        <br/>
         <hr/>
         <div className="d-flex justify-content-end">
           <button className="btn btn-secondary me-2" onClick={handleCancelQuestionEditor}>Cancel</button>

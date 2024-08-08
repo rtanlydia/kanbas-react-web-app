@@ -76,14 +76,14 @@ export default function QuizDetail() {
           <div style={{textAlign: 'center'}}>
             <div>
               {currentUser?.role === 'FACULTY' ? (
-                <button className="btn btn-secondary me-2" onClick={handlePreview}>Preview</button>
+                <button className="btn btn-danger me-2" onClick={handlePreview}>Preview</button>
               ) : (
-                <button className="btn btn-primary me-2" onClick={handleTakeQuiz}>Take Quiz</button>
+                <button className="btn btn-danger me-2" onClick={handleTakeQuiz}>Take Quiz</button>
               )}
               {currentUser?.role === 'FACULTY' && (
-                <button className="btn btn-warning me-2" onClick={handleEdit}>Edit</button>
+                <button className="btn btn-secondary me-2" onClick={handleEdit}>Edit</button>
               )}
-              <button className="btn btn-danger" onClick={handleLastAttempt}>Check Last Attempt</button>
+              <button className="btn btn-secondary" onClick={handleLastAttempt}>Check Your Last Attempt</button>
             </div>
           </div>
           <hr/>
@@ -114,7 +114,6 @@ export default function QuizDetail() {
           <thead>
           <tr>
             <th>Due</th>
-            {/*<th>For</th>*/}
             <th>Available from</th>
             <th>Until</th>
           </tr>
@@ -122,7 +121,6 @@ export default function QuizDetail() {
           <tbody>
           <tr>
             <td>{formatDateTime(quiz.dueDate)}</td>
-            {/*<td>{quiz.for}</td>*/}
             <td>{formatDateTime(quiz.availableFrom)}</td>
             <td>{formatDateTime(quiz.availableUntil)}</td>
           </tr>
