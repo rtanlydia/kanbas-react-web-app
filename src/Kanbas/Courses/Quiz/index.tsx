@@ -112,20 +112,51 @@ import { setQuizzes, addQuizzes, deleteQuizzes } from './reducer';
 import * as client from './client';
 import Dropdown from 'react-bootstrap/Dropdown';
 
+interface Attempt {
+  username: string;
+  score: number;
+  attempt: number;
+}
+
+interface Quiz {
+  _id: string;
+  title: string;
+  course: string;
+  availableFrom?: Date;
+  availableUntil?: Date;
+  dueDate?: Date;
+  points?: number;
+  numberOfQuestions?: number;
+  results: Attempt[];
+  userScore?: number | null;
+}
+
+
 export default function Quizzes() {
   const { cid } = useParams<{ cid: string }>();
   const [quizName, setQuizName] = useState("");
   const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
+  const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      const quizzes = await client.findQuizzesForCourse(cid as string);
-      dispatch(setQuizzes(quizzes));
+      const quizzes: Quiz[] = await client.findQuizzesForCourse(cid as string);
+      const quizzesWithUserScore = await Promise.all(
+        quizzes.map(async (quiz:any) => {
+          const userAttempt = quiz.results.find((result: any) => result.username === currentUser.username);
+          return {
+            ...quiz,
+            userScore: userAttempt ? userAttempt.score : null,
+          };
+        })
+      );
+      dispatch(setQuizzes(quizzesWithUserScore));
     };
     fetchQuizzes();
-  }, [cid, dispatch]);
+  }, [cid, dispatch, currentUser.username]);
+
 
   const addQuiz = async () => {
     const newQuiz = { title: quizName, course: cid };
@@ -220,8 +251,14 @@ export default function Quizzes() {
                       <span className="text-muted">{getQuizStatus(quiz)}</span>
                     </div>
                     <div className="small text-muted mt-1">
-                      <span className="fw-bold">Due</span> {formatDateTime(quiz.dueDate) || 'N/A'} | {quiz.points || 100} pts
+                      <span className="fw-bold">Due</span> {formatDateTime(quiz.dueDate) || 'N/A'} | {quiz.points || 100} pts | {quiz.numberOfQuestions || 'N/A'} Questions
+                      {currentUser.role === 'STUDENT' && quiz.userScore !== null && (
+                        <>
+                          <span className="fw-bold ms-2">Your Score</span> {quiz.userScore}
+                        </>
+                      )}
                     </div>
+
                   </div>
                 </div>
                 <div className="d-flex align-items-center">

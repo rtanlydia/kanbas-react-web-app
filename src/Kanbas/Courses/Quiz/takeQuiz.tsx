@@ -60,6 +60,10 @@ export default function TakeQuiz() {
     }
   };
 
+  const handleEdit = async () => {
+    navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
+  };
+
   return (
     <div className="quiz-container">
       <div className="quiz-header">
@@ -115,7 +119,14 @@ export default function TakeQuiz() {
         </div>
       ))}
       <div className="quiz-footer text-right">
-        <button className="btn btn-primary" onClick={handleSubmit}>Submit Quiz</button>
+        {currentUser?.role === 'FACULTY' && (
+          <button className="btn btn-secondary me-2" onClick={handleEdit}>
+            Keep Editing Quiz
+          </button>
+        )}
+        <button className="btn btn-primary" onClick={handleSubmit}>
+          Submit Quiz
+        </button>
       </div>
     </div>
   );

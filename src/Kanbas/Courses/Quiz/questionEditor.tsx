@@ -85,7 +85,7 @@ function QuestionEditor() {
   };
 
   const handleCancel = () => {
-    navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
+    navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}?tab=questions`);
   };
 
   const handleSave = async () => {
@@ -126,7 +126,7 @@ function QuestionEditor() {
           const newQuestionId = updatedQuiz.questions[updatedQuiz.questions.length - 1]._id;
           navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}/${newQuestionId}`);
         } else {
-          navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
+          navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}?tab=questions`);
         }
       } catch (error) {
         console.error('Error saving question:', error);
@@ -289,7 +289,7 @@ function QuestionEditor() {
         </div>
         <hr />
         <div>
-          <h6>Enter your question details, then set the correct answer.</h6>
+          <h6>Enter your question details, then click the correct answer.</h6>
           <h5 style={{ fontWeight: 'bold' }}>Question:</h5>
           <label>
             <textarea

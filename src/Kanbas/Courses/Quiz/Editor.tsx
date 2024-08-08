@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addQuizzes, updateQuizzes } from './reducer';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,12 +10,15 @@ import { Dropdown } from 'react-bootstrap';
 import {FaEdit} from "react-icons/fa";
 
 
+
 export default function QuizEditor() {
   const { cid, qid } = useParams<{ cid: string, qid: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNewQuiz = qid === "new";
   const [show, setShow] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>('details');
+  const location = useLocation();
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -46,6 +49,11 @@ export default function QuizEditor() {
 
   useEffect(() => {
     if (!isNewQuiz && qid) {
+      const searchParams = new URLSearchParams(location.search);
+      const tab = searchParams.get('tab');
+      if (tab) {
+        setActiveTab(tab);
+      }
       const fetchQuiz = async () => {
         try {
           if (qid) {
@@ -61,7 +69,7 @@ export default function QuizEditor() {
       };
       fetchQuiz();
     }
-  }, [qid, isNewQuiz]);
+  }, [qid, isNewQuiz, location.search]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -249,8 +257,9 @@ export default function QuizEditor() {
 
   return (
       <div id="wd-quizzes-editor" className="container mt-4">
-        <Tabs defaultActiveKey="details" id="quiz-editor-tabs" className="mb-3">
-          <Tab eventKey="details" title="Details">
+        {/*<Tabs defaultActiveKey="details" id="quiz-editor-tabs" className="mb-3">*/}
+        <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k as string)} id="quiz-editor-tabs" className="mb-3">
+        <Tab eventKey="details" title="Details">
             <div className="mb-3">
               <label htmlFor="title" className="form-label">Quiz Name</label>
               <input id="title" className="form-control" value={quiz.title} onChange={handleChange}/>
@@ -407,37 +416,9 @@ export default function QuizEditor() {
             </div>
           </Tab>
           <Tab eventKey="questions" title="Questions">
-            {/*<div>*/}
-            {/*  {questions.map((question, index) => (*/}
-            {/*    <div key={index} className="mb-3">*/}
-            {/*      <div className="d-flex justify-content-between align-items-center">*/}
-            {/*        <div>*/}
-            {/*          <span className="me-2">{index + 1}.</span>*/}
-            {/*          <div><strong>Question Text:</strong> {question.questionText}</div>*/}
-            {/*          <div><strong>Question Type:</strong> {question.questionType}</div>*/}
-            {/*          <div><strong>Points:</strong> {question.points}</div>*/}
-            {/*          <div>*/}
-            {/*            <strong>Options:</strong>*/}
-            {/*            <ul>*/}
-            {/*              {question.options.map((option:any, optIndex:any) => (*/}
-            {/*                <li key={optIndex}>*/}
-            {/*                  {option.optionText} {option.isCorrect ? "(Correct)" : ""}*/}
-            {/*                </li>*/}
-            {/*              ))}*/}
-            {/*            </ul>*/}
-            {/*          </div>*/}
-            {/*          <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>*/}
-            {/*        </div>*/}
-            {/*        <div>*/}
-            {/*          <Button variant="secondary" className="me-2" onClick={() => navigate(`/Kanbas/Courses/${cid}/QuestionEditor/${quiz._id}/${question._id}`)}>Edit</Button>*/}
-            {/*          <Button variant="danger" onClick={() => handleDeleteQuestion(index)}>Delete</Button>*/}
-            {/*        </div>*/}
-            {/*      </div>*/}
-            {/*    </div>*/}
-            {/*  ))}*/}
-            {/*</div>*/}
-
-
+            <div className="total-points">
+              <span className="fw-bold">Points:</span> {questions.reduce((total, question) => total + (question.points || 0), 0)}
+            </div>
             <div>
               {questions.map((question, index) => (
                   <div key={index} className="question-box mb-3">

@@ -1,27 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import {useParams, useNavigate, Link} from 'react-router-dom';
 import * as client from './client';
+import {useSelector} from "react-redux";
 
 export default function QuizDetail() {
   const { cid, qid } = useParams<{ cid: string, qid: string }>();
   const navigate = useNavigate();
+  const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
   const [quiz, setQuiz] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchQuiz = async () => {
-      try {
-        if (qid) { // Ensure qid is not undefined
+    if (qid && currentUser?.username) {
+      const fetchQuiz = async () => {
+        try {
           const existingQuiz = await client.findQuizById(qid);
           if (existingQuiz) {
             setQuiz(existingQuiz);
+            const userAttempt = existingQuiz.results.find((result: any) => result.username === currentUser.username);
+            setAttempt(userAttempt || null);
           }
+        } catch (error) {
+          console.error('Error fetching quiz:', error);
+          setError('Error fetching quiz');
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error('Error fetching quiz:', error);
-      }
-    };
-    fetchQuiz();
-  }, [qid]);
+      };
+      fetchQuiz();
+    }
+  }, [qid, currentUser]);
 
   const handleEdit = () => {
     navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
@@ -32,6 +42,14 @@ export default function QuizDetail() {
   };
   const handlePreview = () => {
     navigate(`/Kanbas/Courses/${cid}/QuizDetail/${qid}/TakeQuiz`);
+  };
+
+  const handleTakeQuiz = () => {
+    if (attempt && attempt.attempt >= quiz.howManyAttempts) {
+      alert('You have reached the maximum number of attempts for this quiz.');
+    } else {
+      navigate(`/Kanbas/Courses/${cid}/QuizDetail/${qid}/TakeQuiz`);
+    }
   };
 
   const formatDateTime = (date:any) => {
@@ -57,8 +75,14 @@ export default function QuizDetail() {
         <div>
           <div style={{textAlign: 'center'}}>
             <div>
-              <button className="btn btn-secondary me-2" onClick={handlePreview}>Preview</button>
-              <button className="btn btn-danger" onClick={handleEdit}>Edit</button>
+              {currentUser?.role === 'FACULTY' ? (
+                <button className="btn btn-secondary me-2" onClick={handlePreview}>Preview</button>
+              ) : (
+                <button className="btn btn-primary me-2" onClick={handleTakeQuiz}>Take Quiz</button>
+              )}
+              {currentUser?.role === 'FACULTY' && (
+                <button className="btn btn-warning me-2" onClick={handleEdit}>Edit</button>
+              )}
               <button className="btn btn-danger" onClick={handleLastAttempt}>Check Last Attempt</button>
             </div>
           </div>

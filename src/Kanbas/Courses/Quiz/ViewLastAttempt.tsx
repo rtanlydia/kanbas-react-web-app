@@ -22,12 +22,14 @@ export default function ViewLastAttempt() {
           if (existingQuiz) {
             setQuiz(existingQuiz);
             const userAttempt = existingQuiz.results.find((result: any) => result.username === currentUser.username);
-            setAttempt(userAttempt);
-            setLoading(false);
+            setAttempt(userAttempt || null);
+            //setLoading(false);
           }
         } catch (error) {
           console.error('Error fetching quiz:', error);
           setError('Error fetching quiz');
+          //setLoading(false);
+        } finally {
           setLoading(false);
         }
       };
@@ -35,13 +37,19 @@ export default function ViewLastAttempt() {
     }
   }, [qid, currentUser]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const formatDateTime = (date:any) => {
+    if (!date) {
+      return "N/A";
+    }
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  };
 
   return (
     <div className="quiz-container">
@@ -52,9 +60,10 @@ export default function ViewLastAttempt() {
           <p><strong>Score:</strong> {attempt?.score}</p>
           <p><strong>Attempts used:</strong> {attempt?.attempt}</p>
           <p><strong>Max attempts allowed:</strong> {quiz?.howManyAttempts}</p>
+          <p><strong>Last submitted time:</strong> {formatDateTime(attempt?.submittedAt)}</p>
         </div>
       </div>
-      {quiz.questions.map((question: any, index: number) => (
+      {attempt && quiz.questions.map((question: any, index: number) => (
         <div key={index} className="question-box mb-3">
           <div className="question-status">
             {attempt?.answers[index] === question.correctAnswer ? (
