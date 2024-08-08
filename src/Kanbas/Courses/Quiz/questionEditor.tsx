@@ -17,11 +17,14 @@ function QuestionEditor() {
     { text: '', isCorrect: false },
     { text: '', isCorrect: false }
   ]);
+
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [quiz, setQuiz] = useState<any>(null);
   const navigate = useNavigate();
   const { cid, qid, questionId } = useParams<{ cid: string, qid: string, questionId: string }>();
   const dispatch = useDispatch();
+  const [selected, setSelected] = useState<boolean | null>(null);
+
 
   useEffect(() => {
     if (qid) {
@@ -73,6 +76,13 @@ function QuestionEditor() {
     setChoices(newChoices);
   };
 
+  const handleTFChoiceChange = (index: number, isCorrect: boolean) => {
+    const newChoices = choices.map((choice, i) => ({
+      ...choice,
+      isCorrect: i === index ? isCorrect : !isCorrect
+    }));
+    setChoices(newChoices);
+  };
 
 
 
@@ -90,6 +100,10 @@ function QuestionEditor() {
 
   const handleSave = async () => {
     if (quiz) {
+      if (questionType === 'True/False' && choices.every(choice => choice.isCorrect === null)) {
+        alert('Please select True or False.');
+        return;
+      }
       const questionData = {
         questionText: questionText,
         questionTitle,
@@ -190,8 +204,11 @@ function QuestionEditor() {
                   type="radio"
                   name="true-false"
                   value="true"
-                  checked={choices[0].isCorrect}
-                  onChange={() => setChoices([{ text: 'True', isCorrect: true }, { text: 'False', isCorrect: false }])}
+                  checked={selected === true}
+                  onChange={() => {
+                    setChoices([{ text: 'True', isCorrect: true }, { text: 'False', isCorrect: false }]);
+                    setSelected(true);
+                  }}
                   style={{ marginRight: '10px', marginTop: '20px' }}
                 />
                 True
@@ -203,8 +220,11 @@ function QuestionEditor() {
                   type="radio"
                   name="true-false"
                   value="false"
-                  checked={!choices[0].isCorrect}
-                  onChange={() => setChoices([{ text: 'True', isCorrect: false }, { text: 'False', isCorrect: true }])}
+                  checked={selected === false}
+                  onChange={() => {
+                    setChoices([{ text: 'True', isCorrect: false }, { text: 'False', isCorrect: true }]);
+                    setSelected(false);
+                  }}
                   style={{ flex: 1, marginRight: '10px', fontSize: '20px', marginTop: '20px' }}
                 />
                 False
@@ -212,6 +232,7 @@ function QuestionEditor() {
             </div>
           </div>
         );
+
       case 'Fill In The Blank':
         return (
           <div>
