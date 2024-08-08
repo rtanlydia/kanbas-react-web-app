@@ -52,78 +52,90 @@ export default function ViewLastAttempt() {
   };
 
   return (
-    <div className="quiz-container">
-      <div className="quiz-header">
-        <h1>{quiz?.title}</h1>
-        <p>{quiz?.description}</p>
-        <div className="attempt-info">
-          <p><strong>Score:</strong> {attempt?.score}</p>
-          <p><strong>Attempts used:</strong> {attempt?.attempt}</p>
-          <p><strong>Max attempts allowed:</strong> {quiz?.howManyAttempts}</p>
-          <p><strong>Last submitted time:</strong> {formatDateTime(attempt?.submittedAt)}</p>
+      <div className="quiz-container">
+        {/*<div className="quiz-header">*/}
+        {/*  <h1>{quiz?.title}</h1>*/}
+        {/*  <p>{quiz?.description}</p>*/}
+        {/*  <div className="attempt-info">*/}
+        {/*    <p><strong>Score:</strong> {attempt?.score}</p>*/}
+        {/*    <p><strong>Attempts used:</strong> {attempt?.attempt}</p>*/}
+        {/*    <p><strong>Max attempts allowed:</strong> {quiz?.howManyAttempts}</p>*/}
+        {/*    <p><strong>Last submitted time:</strong> {formatDateTime(attempt?.submittedAt)}</p>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+        <div className="quiz-header">
+          <h1>{quiz?.title}</h1>
+          <p>{quiz?.description}</p>
+          <div className="attempt-info">
+            <p><strong>Your Score:</strong> {attempt?.score}</p>
+            <p><strong>Attempts used:</strong> {attempt?.attempt}</p>
+            <p><strong>Max attempts allowed:</strong> {quiz?.howManyAttempts}</p>
+            <p><strong>Last submitted time:</strong> {formatDateTime(attempt?.submittedAt)}</p>
+          </div>
         </div>
-      </div>
-      {attempt && quiz.questions.map((question: any, index: number) => (
-        <div key={index} className="question-box mb-3">
-          <div className="question-status">
-            {attempt?.answers[index] === question.correctAnswer ? (
-              <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
-            ) : (
-              <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
-            )}
-          </div>
-          <div className="question-header d-flex justify-content-between align-items-center">
-            <div className="question-title">
-              <span className="question-index">{`Question ${index + 1}`}</span>
-            </div>
-            <div className="question-littleTitle">
-              <span className="question-little">{question.questionTitle}</span>
-            </div>
-            <div className="question-points">
-              {`${question.points} pts`}
-            </div>
-          </div>
-          <hr />
-          <div className="question-content">
-            <div className="question-text">{question.questionText}</div>
-            <hr />
-            <div className="question-options">
-              {question.questionType === 'Fill In The Blank' ? (
-                <div className="fill-in-the-blank">
-                  <input
-                    type="text"
-                    name={`question-${index}`}
-                    value={attempt?.answers[index] || ''}
-                    readOnly
-                  />
+        {attempt && quiz.questions.map((question: any, index: number) => (
+            <div key={index} className="question-box mb-3">
+              <div className="question-status">
+                {attempt?.answers[index] === question.correctAnswer ? (
+                    <FontAwesomeIcon icon={faCheckCircle} className="text-success"/>
+                ) : (
+                    <FontAwesomeIcon icon={faTimesCircle} className="text-danger"/>
+                )}
+              </div>
+              <div className="question-header d-flex justify-content-between align-items-center">
+                <div className="question-title">
+                  <span className="question-index">{`Question ${index + 1}`}</span>
                 </div>
-              ) : (
-                question.options.map((option: { optionText: string; isCorrect: boolean }, optIndex: number) => (
-                  <div key={optIndex} className="option">
-                    <input
-                      type="radio"
-                      name={`question-${index}`}
-                      id={`option-${optIndex}`}
-                      checked={attempt?.answers[index] === option.optionText}
-                      readOnly
-                    />
-                    <label htmlFor={`option-${optIndex}`}>
-                      {option.optionText}
-                    </label>
-                  </div>
-                ))
-              )}
+                <div className="question-littleTitle">
+                  <span className="question-little">{question.questionTitle}</span>
+                </div>
+                <div className="question-points">
+                  {`${question.points} pts`}
+                </div>
+              </div>
+              <hr/>
+              <div className="question-content">
+                <div className="question-text">{question.questionText}</div>
+                <hr/>
+                <div className="question-options">
+                  {question.questionType === 'Fill In The Blank' ? (
+                      <div className="fill-in-the-blank">
+                        <input
+                            type="text"
+                            name={`question-${index}`}
+                            value={attempt?.answers[index] || ''}
+                            readOnly
+                        />
+                      </div>
+                  ) : (
+                      question.options.map((option: { optionText: string; isCorrect: boolean }, optIndex: number) => (
+                          <div key={optIndex} className="option">
+                            <input
+                                type="radio"
+                                name={`question-${index}`}
+                                id={`option-${optIndex}`}
+                                checked={attempt?.answers[index] === option.optionText}
+                                readOnly
+                            />
+                            <label htmlFor={`option-${optIndex}`}>
+                              {option.optionText}
+                            </label>
+                          </div>
+                      ))
+                  )}
+                </div>
+              </div>
+              {/*！！！！！！！！！！！！！！这个之后要删除的！！！！！！！！！！！！！！！*/}
+              <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
+              {/*！！！！！！！！！！！！！！这个之后要删除的！！！！！！！！！！！！！！！*/}
+              <hr/>
             </div>
-          </div>
-          {/*！！！！！！！！！！！！！！这个之后要删除的！！！！！！！！！！！！！！！*/}
-          <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
-          {/*！！！！！！！！！！！！！！这个之后要删除的！！！！！！！！！！！！！！！*/}
-          <hr />
+        ))}
+        <br/>
+        <hr/>
+        <div className="quiz-footer text-right">
+          <button className="btn btn-danger" onClick={() => navigate(-1)}>Back</button>
         </div>
-      ))}
-      <div className="quiz-footer text-right">
-        <button className="btn btn-primary" onClick={() => navigate(-1)}>Back</button>
       </div>
-    </div>
   );
 }

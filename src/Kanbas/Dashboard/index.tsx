@@ -1,11 +1,8 @@
 import { Link } from "react-router-dom";
-import db from "../Database";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import accountReducer, {setCurrentUser} from "../Account/reducer";
 import {enrollInCourse, getEnrolledCourses} from "./client";
-import {Navigate} from "react-router";
-
 
 
 export default function Dashboard(
@@ -89,11 +86,8 @@ export default function Dashboard(
               ))}
             </div>
           </div>
-
-
-          {/*<div style={{ marginTop: "20px" }}>*/}
-          {/*  <Link to="/Kanbas/RegisterCourses" className="btn btn-danger me-2"> + Register for New Courses</Link>*/}
-          {/*</div>*/}
+          <br/>
+          <hr/>
           <div style={{
             marginTop: "20px",
             display: "flex",
@@ -101,6 +95,7 @@ export default function Dashboard(
             alignItems: "center",
             height: "10vh"
           }}>
+
             <Link to="/Kanbas/RegisterCourses" className="btn btn-danger me-2"
                   style={{fontSize: "20px", padding: "10px 25px"}}>
               + Register for New Courses
@@ -181,14 +176,11 @@ export default function Dashboard(
                                 className="btn btn-warning me-2 float-end">
                           Edit
                         </button>
-
-
                       </div>
                     </div>
                   </Link>
                 </div>
             ))}
-
           </div>
         </div>
       </div>
