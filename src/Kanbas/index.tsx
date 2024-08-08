@@ -94,13 +94,7 @@ export default function Kanbas() {
                     updateCourse={updateCourse}/> </ProtectedRoute>
               } />
               <Route path="RegisterCourses" element={<ProtectedRoute>
-                <RegisterCoursePage
-                  courses={courses}
-                  course={course}
-                  setCourse={setCourse}
-                  addNewCourse={addNewCourse}
-                  deleteCourse={deleteCourse}
-                  updateCourse={updateCourse}/>
+                <RegisterCoursePage/>
               </ProtectedRoute>} />
               <Route path="Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses} /></ProtectedRoute>} />
               <Route path="Calendar" element={<h1>Calendar</h1>} />

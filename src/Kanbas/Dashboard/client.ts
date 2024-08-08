@@ -22,6 +22,31 @@ export const enrollInCourse = async (userId:any, courseId:any) => {
 };
 
 export const getAllCourses = async () => {
-  const response = await axiosWithCredentials.get(`/api/courses`);
+  const response = await axiosWithCredentials.get(`${REMOTE_SERVER}/api/courses`);
   return response.data;
+};
+
+// Faculty works, add and delete course!!!!!
+export const createCourse = async (userId: string, courseData: any) => {
+  try {
+    const response = await axiosWithCredentials.put(`${USERS_API}/${userId}/create-course`, courseData);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.error);
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+export const deleteCourseForUser = async (userId: string, courseId: string) => {
+  try {
+    const response = await axiosWithCredentials.delete(`${USERS_API}/${userId}/delete-course/${courseId}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.error);
+    }
+    throw new Error("An unexpected error occurred");
+  }
 };
