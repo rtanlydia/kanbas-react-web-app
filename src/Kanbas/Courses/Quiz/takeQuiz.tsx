@@ -107,14 +107,16 @@ export default function TakeQuiz() {
                       onChange={() => handleAnswerChange(index, option.optionText)}
                     />
                     <label htmlFor={`option-${optIndex}`}>
-                      {option.optionText} {option.isCorrect ? "(Correct)" : ""}
+                      {option.optionText}
                     </label>
                   </div>
                 ))
               )}
             </div>
           </div>
-          <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
+          {currentUser?.role === 'FACULTY' && (
+            <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
+          )}
           <hr />
         </div>
       ))}

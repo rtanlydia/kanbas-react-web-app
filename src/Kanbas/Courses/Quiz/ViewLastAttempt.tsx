@@ -127,9 +127,9 @@ export default function ViewLastAttempt() {
                   )}
                 </div>
               </div>
-              {/*！！！！！！！！！！！！！！这个之后要删除的！！！！！！！！！！！！！！！*/}
-              <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
-              {/*！！！！！！！！！！！！！！这个之后要删除的！！！！！！！！！！！！！！！*/}
+              {currentUser?.role === 'FACULTY' && (
+                <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
+              )}
               <hr/>
             </div>
         ))}
