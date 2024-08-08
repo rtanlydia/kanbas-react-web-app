@@ -130,14 +130,13 @@ export default function QuizEditor() {
 
   const handleSaveAndPublish = async () => {
     try {
+      const quizToSave = { ...quiz, questions, publishStatus: true }; // 设置 publishStatus 为 true
       if (isNewQuiz) {
-        const createdQuiz = await client.createQuiz(cid as string, quiz);
+        const createdQuiz = await client.createQuiz(cid as string, quizToSave);
         dispatch(addQuizzes(createdQuiz));
-        // Add publish logic
       } else {
-        await client.updateQuiz({ ...quiz, _id: qid as string, course: cid });
-        dispatch(updateQuizzes({ ...quiz, _id: qid as string, course: cid }));
-        // Add publish logic
+        await client.updateQuiz({ ...quizToSave, _id: qid as string, course: cid });
+        dispatch(updateQuizzes({ ...quizToSave, _id: qid as string, course: cid }));
       }
       navigate(`/Kanbas/Courses/${cid}/Quizzes`);
     } catch (error) {
@@ -150,7 +149,7 @@ export default function QuizEditor() {
   };
 
   const handleCancelQuestionEditor = () => {
-    navigate(`/Kanbas/Courses/${cid}/QuizDetail/${qid}`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes`);
   };
 
   const formatDateTime = (date:any) => {

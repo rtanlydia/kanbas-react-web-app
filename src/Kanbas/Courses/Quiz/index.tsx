@@ -108,7 +108,7 @@ import "./index.css";
 import { MdAssignmentAdd } from "react-icons/md";
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setQuizzes, addQuizzes, deleteQuizzes } from './reducer';
+import {setQuizzes, addQuizzes, deleteQuizzes, updateQuizzes} from './reducer';
 import * as client from './client';
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -129,6 +129,7 @@ interface Quiz {
   numberOfQuestions?: number;
   results: Attempt[];
   userScore?: number | null;
+  publishStatus: false;
 }
 
 
@@ -169,6 +170,24 @@ export default function Quizzes() {
     if (window.confirm("Are you sure you want to delete this quiz?")) {
       await client.deleteQuiz(quizId);
       dispatch(deleteQuizzes(quizId));
+    }
+  };
+
+  const handlePublish = async (quizId: string) => {
+    try {
+      const updatedQuiz = await client.publishQuiz(quizId, true);
+      dispatch(updateQuizzes(updatedQuiz));
+    } catch (error) {
+      console.error('Error publishing quiz:', error);
+    }
+  };
+
+  const handleUnpublish = async (quizId: string) => {
+    try {
+      const updatedQuiz = await client.publishQuiz(quizId, false);
+      dispatch(updateQuizzes(updatedQuiz));
+    } catch (error) {
+      console.error('Error unpublishing quiz:', error);
     }
   };
 
@@ -240,9 +259,13 @@ export default function Quizzes() {
                   <MdAssignmentAdd className="me-3 custom-text-color-quiz-icon" style={{fontSize: '20px'}}/>
                   <div className="d-flex flex-column">
                     <div className="d-flex align-items-center">
-                      <Link className="wd-quiz-link fw-bold me-2 custom-text-color2 no-underline" to={`/Kanbas/Courses/${cid}/QuizDetail/${quiz._id}`}>
-                        {quiz.title}
-                      </Link>
+                      {currentUser.role === 'STUDENT' && !quiz.publishStatus ? (
+                        <span className="wd-quiz-link fw-bold me-2 custom-text-color2">{quiz.title}</span>
+                      ) : (
+                        <Link className="wd-quiz-link fw-bold me-2 custom-text-color2 no-underline" to={`/Kanbas/Courses/${cid}/QuizDetail/${quiz._id}`}>
+                          {quiz.title}
+                        </Link>
+                      )}
                     </div>
                     <div className="d-flex align-items-center">
                       <span className="custom-text-color-multiple-module me-2">Multiple Modules</span>
@@ -251,41 +274,38 @@ export default function Quizzes() {
                       <span className="text-muted">{getQuizStatus(quiz)}</span>
                     </div>
                     <div className="small text-muted mt-1">
-                      <span className="fw-bold">Due</span> {formatDateTime(quiz.dueDate) || 'N/A'} | {quiz.points || 100} pts | {quiz.numberOfQuestions || 'N/A'} Questions
+                      <span className="fw-bold">Due</span> {formatDateTime(quiz.dueDate) || 'N/A'} | {quiz.points || 100} pts | {quiz.questions.length} Questions
                       {currentUser.role === 'STUDENT' && quiz.userScore !== null && (
                         <>
                           <span className="fw-bold ms-2">Your Score</span> {quiz.userScore}
                         </>
                       )}
                     </div>
-
                   </div>
                 </div>
                 <div className="d-flex align-items-center">
-                  <FaCheckCircle className="text-success me-3"/>
-                  <Dropdown>
-                    <Dropdown.Toggle variant="link" bsPrefix="p-0">
-                      <FaEllipsisV className="text-muted"/>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => navigate(`/Kanbas/Courses/${cid}/QuizEditor/${quiz._id}`)}>
-                        <FaEdit className="me-2"/> Edit
-                      </Dropdown.Item>
-                      {/*<Dropdown.Item onClick={() => navigate(`/Kanbas/Courses/${cid}/QuizDetail/${quiz._id}`)}>*/}
-                      {/*  <FaEdit className="me-2"/> Edit*/}
-                      {/*</Dropdown.Item>*/}
-
-                      <Dropdown.Item onClick={() => deleteQuizById(quiz._id)}>
-                        <FaTrash className="me-2"/> Delete
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => publishQuiz(quiz._id, true)}>
-                        <FaUpload className="me-2"/> Publish
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => publishQuiz(quiz._id, false)}>
-                        <FaDownload className="me-2"/> Unpublish
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
+                  <FaCheckCircle className={`me-3 ${quiz.publishStatus ? 'text-success' : 'text-muted'}`} />
+                  {currentUser.role === 'FACULTY' && (
+                    <Dropdown>
+                      <Dropdown.Toggle variant="link" bsPrefix="p-0">
+                        <FaEllipsisV className="text-muted"/>
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => navigate(`/Kanbas/Courses/${cid}/QuizEditor/${quiz._id}`)}>
+                          <FaEdit className="me-2"/> Edit
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => deleteQuizById(quiz._id)}>
+                          <FaTrash className="me-2"/> Delete
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handlePublish(quiz._id)}>
+                          <FaUpload className="me-2"/> Publish
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleUnpublish(quiz._id)}>
+                          <FaDownload className="me-2"/> Unpublish
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  )}
                 </div>
               </li>
           ))}

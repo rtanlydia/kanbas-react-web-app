@@ -38,7 +38,6 @@ export const addQuestionToQuiz = async (quizId: string, question: any) => {
   }
 };
 
-//！！！！！！！ need edit！！！@！！！！！！！
 export const submitQuizAnswers = async (quizId: string, payload: { username: string, answers: string[] }) => {
   const response = await axios.post(`${QUIZZES_API}/${quizId}/submit`, payload, {
     headers: {
@@ -50,5 +49,10 @@ export const submitQuizAnswers = async (quizId: string, payload: { username: str
     throw new Error('Failed to submit quiz answers');
   }
 
+  return response.data;
+};
+
+export const publishQuiz = async (quizId: string, publish: boolean) => {
+  const response = await axios.patch(`${QUIZZES_API}/${quizId}/publish`, { publishStatus: publish });
   return response.data;
 };
