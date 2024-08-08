@@ -2,30 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import * as client from "./client";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faCheckCircle, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
 
-export default function TakeQuiz() {
+export default function ViewLastAttempt() {
   const { cid, qid } = useParams<{ cid: string, qid: string }>();
   const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
   const navigate = useNavigate();
   const [quiz, setQuiz] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [questions, setQuestions] = useState<any[]>([]);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [attempt, setAttempt] = useState<any>(null);
 
   useEffect(() => {
-    if (qid) {
+    if (qid && currentUser?.username) {
       const fetchQuiz = async () => {
         try {
-          if (qid) {
-            const existingQuiz = await client.findQuizById(qid);
-            if (existingQuiz) {
-              setQuiz(existingQuiz);
-              setQuestions(existingQuiz.questions || []);
-              // 初始化 answers 数组，所有问题的回答都为空字符串
-              setAnswers(existingQuiz.questions.map(() => ""));
-              setLoading(false);
-            }
+          const existingQuiz = await client.findQuizById(qid);
+          if (existingQuiz) {
+            setQuiz(existingQuiz);
+            const userAttempt = existingQuiz.results.find((result: any) => result.username === currentUser.username);
+            setAttempt(userAttempt);
+            setLoading(false);
           }
         } catch (error) {
           console.error('Error fetching quiz:', error);
@@ -35,39 +33,36 @@ export default function TakeQuiz() {
       };
       fetchQuiz();
     }
-  }, [qid]);
+  }, [qid, currentUser]);
 
-  const handleAnswerChange = (questionIndex: number, value: string | number) => {
-    setAnswers(prevAnswers => {
-      const newAnswers = [...prevAnswers];
-      newAnswers[questionIndex] = value.toString();
-      return newAnswers;
-    });
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  const handleSubmit = async () => {
-    try {
-      const payload = {
-        username: currentUser.username,
-        answers: answers,
-      };
-      await client.submitQuizAnswers(qid as string, payload);
-      alert('Quiz submitted successfully!');
-      navigate(-1);
-    } catch (error) {
-      console.error('Error submitting quiz:', error);
-      alert('Error submitting quiz.');
-    }
-  };
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="quiz-container">
       <div className="quiz-header">
         <h1>{quiz?.title}</h1>
         <p>{quiz?.description}</p>
+        <div className="attempt-info">
+          <p><strong>Score:</strong> {attempt?.score}</p>
+          <p><strong>Attempts used:</strong> {attempt?.attempt}</p>
+          <p><strong>Max attempts allowed:</strong> {quiz?.howManyAttempts}</p>
+        </div>
       </div>
-      {questions.map((question, index) => (
+      {quiz.questions.map((question: any, index: number) => (
         <div key={index} className="question-box mb-3">
+          <div className="question-status">
+            {attempt?.answers[index] === question.correctAnswer ? (
+              <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
+            ) : (
+              <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
+            )}
+          </div>
           <div className="question-header d-flex justify-content-between align-items-center">
             <div className="question-title">
               <span className="question-index">{`Question ${index + 1}`}</span>
@@ -89,8 +84,8 @@ export default function TakeQuiz() {
                   <input
                     type="text"
                     name={`question-${index}`}
-                    placeholder="Enter your answer here"
-                    onChange={(e) => handleAnswerChange(index, e.target.value)}
+                    value={attempt?.answers[index] || ''}
+                    readOnly
                   />
                 </div>
               ) : (
@@ -100,22 +95,25 @@ export default function TakeQuiz() {
                       type="radio"
                       name={`question-${index}`}
                       id={`option-${optIndex}`}
-                      onChange={() => handleAnswerChange(index, option.optionText)}
+                      checked={attempt?.answers[index] === option.optionText}
+                      readOnly
                     />
                     <label htmlFor={`option-${optIndex}`}>
-                      {option.optionText} {option.isCorrect ? "(Correct)" : ""}
+                      {option.optionText}
                     </label>
                   </div>
                 ))
               )}
             </div>
           </div>
+          {/*！！！！！！！！！！！！！！这个之后要删除的！！！！！！！！！！！！！！！*/}
           <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
+          {/*！！！！！！！！！！！！！！这个之后要删除的！！！！！！！！！！！！！！！*/}
           <hr />
         </div>
       ))}
       <div className="quiz-footer text-right">
-        <button className="btn btn-primary" onClick={handleSubmit}>Submit Quiz</button>
+        <button className="btn btn-primary" onClick={() => navigate(-1)}>Back</button>
       </div>
     </div>
   );

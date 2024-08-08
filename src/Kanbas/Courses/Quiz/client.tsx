@@ -37,3 +37,18 @@ export const addQuestionToQuiz = async (quizId: string, question: any) => {
     throw error;
   }
 };
+
+//！！！！！！！ need edit！！！@！！！！！！！
+export const submitQuizAnswers = async (quizId: string, payload: { username: string, answers: string[] }) => {
+  const response = await axios.post(`${QUIZZES_API}/${quizId}/submit`, payload, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+
+  if (response.status !== 200) {
+    throw new Error('Failed to submit quiz answers');
+  }
+
+  return response.data;
+};

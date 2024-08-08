@@ -27,6 +27,9 @@ export default function QuizDetail() {
     navigate(`/Kanbas/Courses/${cid}/QuizEditor/${qid}`);
   };
 
+  const handleLastAttempt = () => {
+    navigate(`/Kanbas/Courses/${cid}/QuizDetail/${qid}/ViewLastAttempt`);
+  };
   const handlePreview = () => {
     navigate(`/Kanbas/Courses/${cid}/QuizDetail/${qid}/TakeQuiz`);
   };
@@ -56,6 +59,7 @@ export default function QuizDetail() {
             <div>
               <button className="btn btn-secondary me-2" onClick={handlePreview}>Preview</button>
               <button className="btn btn-danger" onClick={handleEdit}>Edit</button>
+              <button className="btn btn-danger" onClick={handleLastAttempt}>Check Last Attempt</button>
             </div>
           </div>
           <hr/>

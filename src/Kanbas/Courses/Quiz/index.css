@@ -144,3 +144,43 @@
 .question-actions {
     margin-top: 20px;
 }
+
+.text-right {
+    text-align: right;
+}
+
+.quiz-container {
+    padding: 20px;
+}
+
+.quiz-header {
+    margin-bottom: 20px;
+}
+
+.attempt-info {
+    margin-top: 10px;
+}
+
+.question-box {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.question-content {
+    margin-top: 10px;
+}
+
+.question-options {
+    margin-top: 10px;
+}
+
+.quiz-footer {
+    margin-top: 20px;
+}
