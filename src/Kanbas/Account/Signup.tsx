@@ -57,8 +57,8 @@ export default function Signup() {
           <option value="STUDENT">Student</option>
           <option value="FACULTY">Faculty</option>
         </select>
-        <button onClick={signup} className="wd-signup-btn btn btn-primary w-100">Sign up</button><br />
-        <Link to="/Kanbas/Account/Signin" className="wd-signin-link">Sign in</Link>
+        <button onClick={signup} className="wd-signup-btn btn btn-danger w-100">Sign up</button><br />
+        <Link to="/Kanbas/Account/Signin" className="wd-signin-link, text-black">Sign in</Link>
       </div>
   );
 
