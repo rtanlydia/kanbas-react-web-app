@@ -119,7 +119,7 @@ export default function Dashboard(
                             {course.description}
                           </p>
                           <Link to={`/Kanbas/Courses/${course.number}/Home`}
-                                className="btn btn-primary">Go</Link>
+                                className="btn btn-danger">Go</Link>
                         </div>
                       </div>
                     </Link>
@@ -169,8 +169,8 @@ export default function Dashboard(
                     <div className="card-body">
                       <span className="wd-dashboard-course-link" style={{textDecoration: "none", color: "navy", fontWeight: "bold"}}>{course.name}</span>
                       <p className="wd-dashboard-course-title card-text" style={{maxHeight: 53, overflow: "hidden"}}>{course.description}</p>
-                      <Link to={`/Kanbas/Courses/${course.number}/Home`} className="btn btn-primary">Go</Link>
-                      <button onClick={(event) => { event.preventDefault(); handleDeleteCourse(course._id); }} className="btn btn-danger float-end" id="wd-delete-course-click">Delete</button>
+                      <Link to={`/Kanbas/Courses/${course.number}/Home`} className="btn btn-danger">Go</Link>
+                      <button onClick={(event) => { event.preventDefault(); handleDeleteCourse(course._id); }} className="btn btn-secondary float-end" id="wd-delete-course-click">Delete</button>
                       {/*<button onClick={(event) => { event.preventDefault(); setCourse(course); }} className="btn btn-warning me-2 float-end" id="wd-edit-course-click">Edit</button>*/}
                     </div>
                   </div>
@@ -273,12 +273,13 @@ export default function Dashboard(
                           {course.description}
                         </p>
                         <Link to={`/Kanbas/Courses/${course.number}/Home`}
-                              className="btn btn-primary">Go</Link>
+                              className="btn btn-danger
+                              ">Go</Link>
 
                         <button onClick={(event) => {
                           event.preventDefault();
                           deleteCourse(course._id);
-                        }} className="btn btn-danger float-end"
+                        }} className="btn btn-secondary float-end"
                                 id="wd-delete-course-click">
                           Delete
                         </button>

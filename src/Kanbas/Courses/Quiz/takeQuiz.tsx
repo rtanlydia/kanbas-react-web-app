@@ -65,73 +65,75 @@ export default function TakeQuiz() {
   };
 
   return (
-    <div className="quiz-container">
-      <div className="quiz-header">
-        <h1>{quiz?.title}</h1>
-        <p>{quiz?.description}</p>
-      </div>
-      {questions.map((question, index) => (
-        <div key={index} className="question-box mb-3">
-          <div className="question-header d-flex justify-content-between align-items-center">
-            <div className="question-title">
-              <span className="question-index">{`Question ${index + 1}`}</span>
-            </div>
-            <div className="question-littleTitle">
-              <span className="question-little">{question.questionTitle}</span>
-            </div>
-            <div className="question-points">
-              {`${question.points} pts`}
-            </div>
-          </div>
-          <hr />
-          <div className="question-content">
-            <div className="question-text">{question.questionText}</div>
-            <hr />
-            <div className="question-options">
-              {question.questionType === 'Fill In The Blank' ? (
-                <div className="fill-in-the-blank">
-                  <input
-                    type="text"
-                    name={`question-${index}`}
-                    placeholder="Enter your answer here"
-                    onChange={(e) => handleAnswerChange(index, e.target.value)}
-                  />
-                </div>
-              ) : (
-                question.options.map((option: { optionText: string; isCorrect: boolean }, optIndex: number) => (
-                  <div key={optIndex} className="option">
-                    <input
-                      type="radio"
-                      name={`question-${index}`}
-                      id={`option-${optIndex}`}
-                      onChange={() => handleAnswerChange(index, option.optionText)}
-                    />
-                    <label htmlFor={`option-${optIndex}`}>
-                      {option.optionText}
-                    </label>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-          {currentUser?.role === 'FACULTY' && (
-            <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
-          )}
-          <hr />
+      <div className="quiz-container, quiz-header">
+        <div>
+          <h1>{quiz?.title}</h1>
+          <p>{quiz?.description}</p>
         </div>
-      ))}
-      <br/>
-      <hr/>
-      <div className="quiz-footer text-right">
-        {currentUser?.role === 'FACULTY' && (
-          <button className="btn btn-secondary me-2" onClick={handleEdit}>
-            Keep Editing Quiz
+        <hr/>
+        <br/>
+        {questions.map((question, index) => (
+            <div key={index} className="question-box mb-3">
+              <div className="question-header d-flex justify-content-between align-items-center">
+                <div className="question-title">
+                  <span className="question-index">{`Question ${index + 1}`}</span>
+                </div>
+                <div className="question-littleTitle">
+                  <span className="question-little">{question.questionTitle}</span>
+                </div>
+                <div className="question-points">
+                  {`${question.points} pts`}
+                </div>
+              </div>
+              <hr/>
+              <div className="question-content">
+                <div className="question-text">{question.questionText}</div>
+                <hr/>
+                <div className="question-options">
+                  {question.questionType === 'Fill In The Blank' ? (
+                      <div className="fill-in-the-blank">
+                        <input
+                            type="text"
+                            name={`question-${index}`}
+                            placeholder="Enter your answer here"
+                            onChange={(e) => handleAnswerChange(index, e.target.value)}
+                        />
+                      </div>
+                  ) : (
+                      question.options.map((option: { optionText: string; isCorrect: boolean }, optIndex: number) => (
+                          <div key={optIndex} className="option">
+                            <input
+                                type="radio"
+                                name={`question-${index}`}
+                                id={`option-${optIndex}`}
+                                onChange={() => handleAnswerChange(index, option.optionText)}
+                            />
+                            <label htmlFor={`option-${optIndex}`}>
+                              {option.optionText}
+                            </label>
+                          </div>
+                      ))
+                  )}
+                </div>
+              </div>
+              {currentUser?.role === 'FACULTY' && (
+                  <div><strong>Correct Answer:</strong> {question.correctAnswer}</div>
+              )}
+              <hr/>
+            </div>
+        ))}
+        <br/>
+        <hr/>
+        <div className="quiz-footer text-right">
+          {currentUser?.role === 'FACULTY' && (
+              <button className="btn btn-secondary me-2" onClick={handleEdit}>
+                Keep Editing Quiz
+              </button>
+          )}
+          <button className="btn btn-danger" onClick={handleSubmit}>
+            Submit Quiz
           </button>
-        )}
-        <button className="btn btn-danger" onClick={handleSubmit}>
-          Submit Quiz
-        </button>
+        </div>
       </div>
-    </div>
   );
 }

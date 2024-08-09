@@ -53,16 +53,6 @@ export default function ViewLastAttempt() {
 
   return (
       <div className="quiz-container, quiz-header">
-        {/*<div className="quiz-header">*/}
-        {/*  <h1>{quiz?.title}</h1>*/}
-        {/*  <p>{quiz?.description}</p>*/}
-        {/*  <div className="attempt-info">*/}
-        {/*    <p><strong>Score:</strong> {attempt?.score}</p>*/}
-        {/*    <p><strong>Attempts used:</strong> {attempt?.attempt}</p>*/}
-        {/*    <p><strong>Max attempts allowed:</strong> {quiz?.howManyAttempts}</p>*/}
-        {/*    <p><strong>Last submitted time:</strong> {formatDateTime(attempt?.submittedAt)}</p>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
         <div>
           <h1>{quiz?.title}</h1>
           <p>{quiz?.description}</p>

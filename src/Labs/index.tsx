@@ -15,6 +15,7 @@ export default function Labs() {
       <Provider store={store}>
       <div>
         <h1>CS 5610 Summer Full 2024 - Rong Tan</h1>
+        <h3>Final Project (Add Quizzes to Kanbas) worked on individually</h3>
         <TOC/>
         <Routes>
           <Route path="/" element={<Navigate to="Lab1"/>}/>
@@ -23,9 +24,6 @@ export default function Labs() {
           <Route path="Lab3/*" element={<Lab3/>}/>
           <Route path="Lab4" element={<Lab4/>}/>
           <Route path="Lab5" element={<Lab5/>}/>
-
-
-
         </Routes>
       </div>
       </Provider>
